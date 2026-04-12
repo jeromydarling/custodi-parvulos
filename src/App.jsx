@@ -6,6 +6,7 @@ import ParishAdmin from "./pages/ParishAdmin";
 import IndividualAuth from "./pages/IndividualAuth";
 import Journey from "./pages/Journey";
 import Testimonials from "./pages/Testimonials";
+import AdminEmail from "./pages/AdminEmail";
 
 export default function App() {
   return (
@@ -17,6 +18,7 @@ export default function App() {
       <Route path="/start" element={<IndividualAuth />} />
       <Route path="/journey" element={<Journey />} />
       <Route path="/testimonials" element={<Testimonials />} />
+      <Route path="/admin-email" element={<AdminEmail />} />
     </Routes>
   );
 }
