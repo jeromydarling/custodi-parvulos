@@ -7,6 +7,12 @@ import IndividualAuth from "./pages/IndividualAuth";
 import Journey from "./pages/Journey";
 import Testimonials from "./pages/Testimonials";
 import AdminEmail from "./pages/AdminEmail";
+import AdminDashboard from "./pages/AdminDashboard";
+import TravelTracker from "./pages/TravelTracker";
+import Resources from "./pages/Resources";
+import DailyReadings from "./pages/DailyReadings";
+import Certificate from "./pages/Certificate";
+import PressKit from "./pages/PressKit";
 
 export default function App() {
   return (
@@ -19,6 +25,12 @@ export default function App() {
       <Route path="/journey" element={<Journey />} />
       <Route path="/testimonials" element={<Testimonials />} />
       <Route path="/admin-email" element={<AdminEmail />} />
+      <Route path="/admin" element={<AdminDashboard />} />
+      <Route path="/admin-travel" element={<TravelTracker />} />
+      <Route path="/resources" element={<Resources />} />
+      <Route path="/readings" element={<DailyReadings />} />
+      <Route path="/certificate" element={<Certificate />} />
+      <Route path="/press" element={<PressKit />} />
     </Routes>
   );
 }

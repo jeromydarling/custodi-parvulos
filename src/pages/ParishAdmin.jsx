@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Users, UserPlus, CheckCircle, Clock, Trash2, LogOut, ChevronDown } from "lucide-react";
+import { Users, UserPlus, CheckCircle, Clock, Trash2, LogOut, ChevronDown, Download, Award } from "lucide-react";
 import PelicanLogo from "../components/PelicanLogo";
 import FadeIn from "../components/FadeIn";
 import Divider from "../components/Divider";
 import { font, bg, ink, brown, red, stone, muted, cream, borderC, sectionStyle, prose, heading, textureOverlay, globalCSS } from "../theme";
-import { getCurrentUser, getParish, addParishioner, removeParishioner, logout, registerParish, loginParishAdmin } from "../store";
+import { getCurrentUser, getParish, addParishioner, removeParishioner, logout, registerParish, loginParishAdmin, issueCertificate } from "../store";
 
 const inputStyle = { width: "100%", background: cream, border: `1px solid ${borderC}`, borderRadius: 6, padding: "12px 16px", fontFamily: font, fontSize: 16, color: ink, outline: "none", boxSizing: "border-box" };
 const btnStyle = { background: brown, color: cream, border: "none", padding: "12px 32px", borderRadius: 6, fontFamily: font, fontSize: 15, fontWeight: 600, cursor: "pointer" };
@@ -123,8 +123,26 @@ export default function ParishAdmin() {
         {view === "dashboard" && parish && (
           <>
             <FadeIn>
-              <h1 style={{ ...heading, fontSize: 28 }}>{parish.name}</h1>
-              <p style={{ color: stone, fontSize: 15, marginTop: 4 }}>{parish.diocese} — {parish.city}, {parish.state}</p>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 12 }}>
+                <div>
+                  <h1 style={{ ...heading, fontSize: 28 }}>{parish.name}</h1>
+                  <p style={{ color: stone, fontSize: 15, marginTop: 4 }}>{parish.diocese} — {parish.city}, {parish.state}</p>
+                </div>
+                <button onClick={() => {
+                  const rows = [["Participant Name","Email","Role","Formation Completed","Completion Date","Parts Completed","Organization","Diocese"]];
+                  parish.parishioners.forEach(p => {
+                    rows.push([p.name, p.email, p.role || "Volunteer", p.completedAt ? "Yes" : "No", p.completedAt ? new Date(p.completedAt).toLocaleDateString() : "", Object.keys(p.progress || {}).length, parish.name, parish.diocese]);
+                  });
+                  const csv = rows.map(r => r.map(c => `"${String(c).replace(/"/g,'""')}"`).join(",")).join("\n");
+                  const blob = new Blob([csv], { type: "text/csv" });
+                  const url = URL.createObjectURL(blob);
+                  const a = document.createElement("a");
+                  a.href = url; a.download = `stonebridge-audit-${parish.name.replace(/\s+/g,"-")}-${new Date().toISOString().slice(0,10)}.csv`;
+                  a.click();
+                }} style={{ background: "none", border: `1px solid ${brown}`, color: brown, padding: "10px 16px", borderRadius: 6, fontFamily: font, fontSize: 13, fontWeight: 600, cursor: "pointer", display: "flex", alignItems: "center", gap: 6 }}>
+                  <Download size={13} /> StoneBridge Audit Export
+                </button>
+              </div>
             </FadeIn>
 
             {/* Stats */}
@@ -176,9 +194,14 @@ export default function ParishAdmin() {
                           </div>
                           <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
                             {p.completedAt ? (
-                              <span style={{ color: "#4A7C59", fontSize: 13, fontWeight: 600, display: "flex", alignItems: "center", gap: 4 }}>
-                                <CheckCircle size={14} /> Complete
-                              </span>
+                              <>
+                                <span style={{ color: "#4A7C59", fontSize: 13, fontWeight: 600, display: "flex", alignItems: "center", gap: 4 }}>
+                                  <CheckCircle size={14} /> Complete
+                                </span>
+                                <a href={`#/certificate?name=${encodeURIComponent(p.name)}&parish=${encodeURIComponent(parish.name)}`} target="_blank" rel="noopener noreferrer" style={{ color: brown, fontSize: 12, textDecoration: "none", display: "flex", alignItems: "center", gap: 4 }}>
+                                  <Award size={13} /> Certificate
+                                </a>
+                              </>
                             ) : (
                               <span style={{ color: stone, fontSize: 13 }}>{done}/5 parts</span>
                             )}

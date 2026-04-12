@@ -7,7 +7,15 @@ function load() {
 }
 
 function defaultData() {
-  return { parishes: [], individuals: [], currentUser: null, retreatRequests: [], scheduledEmails: [], sentEmails: [], newsletterSubscribers: [], newsletters: [], adminUser: null };
+  return {
+    parishes: [], individuals: [], currentUser: null, retreatRequests: [],
+    scheduledEmails: [], sentEmails: [], newsletterSubscribers: [], newsletters: [],
+    adminUser: null,
+    trips: [], expenses: [], hostHomes: [],
+    bishops: [], benefactors: [], dioceses: [], referrals: [], facilitators: [],
+    caseStudies: [], prayerIntentions: [], massIntentions: [], waitlist: [],
+    certificates: [],
+  };
 }
 
 function save(data) {
@@ -241,4 +249,71 @@ export function clearAdminUser() {
   const d = load();
   d.adminUser = null;
   save(d);
+}
+
+// ── Generic list CRUD helper ──
+function makeList(key) {
+  return {
+    getAll: () => load()[key] || [],
+    add: (item) => {
+      const d = load();
+      const entry = { id: key + "_" + Date.now() + Math.random().toString(36).slice(2,5), createdAt: new Date().toISOString(), ...item };
+      d[key] = d[key] || [];
+      d[key].push(entry);
+      save(d);
+      return entry;
+    },
+    update: (id, patch) => {
+      const d = load();
+      d[key] = (d[key] || []).map(x => x.id === id ? { ...x, ...patch, updatedAt: new Date().toISOString() } : x);
+      save(d);
+    },
+    remove: (id) => {
+      const d = load();
+      d[key] = (d[key] || []).filter(x => x.id !== id);
+      save(d);
+    },
+  };
+}
+
+export const trips = makeList("trips");
+export const expenses = makeList("expenses");
+export const hostHomes = makeList("hostHomes");
+export const bishops = makeList("bishops");
+export const benefactors = makeList("benefactors");
+export const dioceses = makeList("dioceses");
+export const referrals = makeList("referrals");
+export const facilitators = makeList("facilitators");
+export const caseStudies = makeList("caseStudies");
+export const prayerIntentions = makeList("prayerIntentions");
+export const massIntentions = makeList("massIntentions");
+export const waitlist = makeList("waitlist");
+export const certificates = makeList("certificates");
+
+// ── Retreat status pipeline ──
+export function updateRetreatStatus(id, status) {
+  const d = load();
+  const r = (d.retreatRequests || []).find(x => x.id === id);
+  if (r) { r.status = status; r.updatedAt = new Date().toISOString(); save(d); }
+  return r;
+}
+
+// ── Certificate issuance ──
+export function issueCertificate(participantName, parishName, completedAt) {
+  const d = load();
+  const cert = {
+    id: "cert_" + Date.now() + Math.random().toString(36).slice(2,5),
+    participantName, parishName, completedAt: completedAt || new Date().toISOString(),
+    issueDate: new Date().toISOString(),
+    serialNumber: "CP-" + Date.now().toString(36).toUpperCase(),
+  };
+  d.certificates = d.certificates || [];
+  d.certificates.push(cert);
+  save(d);
+  return cert;
+}
+
+export function findCertificate(participantName, parishName) {
+  const d = load();
+  return (d.certificates || []).find(c => c.participantName === participantName && c.parishName === parishName);
 }

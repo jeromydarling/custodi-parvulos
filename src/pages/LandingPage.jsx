@@ -45,6 +45,8 @@ export default function LandingPage() {
         <div style={{ display: "flex", gap: 20 }}>
           <Link to="/formation" style={{ fontFamily: font, color: stone, textDecoration: "none", fontSize: 14 }}>Formation</Link>
           <Link to="/retreat" style={{ fontFamily: font, color: red, textDecoration: "none", fontSize: 14, fontWeight: 600 }}>Parish Retreat</Link>
+          <Link to="/resources" style={{ fontFamily: font, color: stone, textDecoration: "none", fontSize: 14 }}>Resources</Link>
+          <Link to="/readings" style={{ fontFamily: font, color: stone, textDecoration: "none", fontSize: 14 }}>Readings</Link>
           <Link to="/testimonials" style={{ fontFamily: font, color: stone, textDecoration: "none", fontSize: 14 }}>Testimonies</Link>
         </div>
       </nav>
