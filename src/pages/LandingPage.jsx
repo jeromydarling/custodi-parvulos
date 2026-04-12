@@ -5,6 +5,7 @@ import PelicanLogo from "../components/PelicanLogo";
 import FadeIn from "../components/FadeIn";
 import Divider from "../components/Divider";
 import { font, bg, ink, brown, red, stone, muted, cream, borderC, sectionStyle, prose, heading, textureOverlay, globalCSS } from "../theme";
+import { TestimonialCard } from "./Testimonials";
 
 export default function LandingPage() {
   const [expandedPart, setExpandedPart] = useState(null);
@@ -44,6 +45,7 @@ export default function LandingPage() {
         <div style={{ display: "flex", gap: 20 }}>
           <Link to="/formation" style={{ fontFamily: font, color: stone, textDecoration: "none", fontSize: 14 }}>Formation</Link>
           <Link to="/retreat" style={{ fontFamily: font, color: red, textDecoration: "none", fontSize: 14, fontWeight: 600 }}>Parish Retreat</Link>
+          <Link to="/testimonials" style={{ fontFamily: font, color: stone, textDecoration: "none", fontSize: 14 }}>Testimonies</Link>
         </div>
       </nav>
 
@@ -283,6 +285,31 @@ export default function LandingPage() {
           <FadeIn delay={0.3}>
             <div style={{ textAlign: "center" }}>
               <Link to="/retreat" style={{ display: "inline-block", background: brown, color: cream, padding: "16px 48px", borderRadius: 6, textDecoration: "none", fontFamily: font, fontSize: 17, letterSpacing: 1, fontWeight: 600 }}>Register Your Parish</Link>
+            </div>
+          </FadeIn>
+        </div>
+      </section>
+
+      {/* TESTIMONIES */}
+      <section style={{ position: "relative", zIndex: 1, padding: "80px 24px" }}>
+        <div style={sectionStyle}>
+          <FadeIn>
+            <p style={{ color: red, fontSize: 12, letterSpacing: 3, textAlign: "center", fontWeight: 700, marginBottom: 8 }}>TESTIMONIES</p>
+            <h2 style={{ ...heading, fontSize: "clamp(24px, 5vw, 30px)", textAlign: "center", marginBottom: 16 }}>Voices of the Faithful</h2>
+            <p style={{ color: stone, fontSize: 16, textAlign: "center", fontStyle: "italic", marginBottom: 40 }}>What parishes are saying about their experience</p>
+          </FadeIn>
+          <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+            {[
+              { id: 1, name: "Fr. Michael Torres", parish: "St. Thomas More", diocese: "Diocese of Austin", role: "Pastor", type: "retreat", rating: 5, text: "In twenty years of priesthood, this is the first safe environment program that felt like prayer instead of paperwork. My entire staff was moved.", date: "2026-03-15T00:00:00.000Z" },
+              { id: 2, name: "Maria Gonzalez", parish: "Our Lady of Guadalupe", diocese: "Archdiocese of San Antonio", role: "DRE / Safe Environment Coordinator", type: "retreat", rating: 5, text: "I have been the safe environment coordinator for eight years and have watched people click through VIRTUS with glazed eyes. At our retreat, people were weeping during the Lectio Divina.", date: "2026-02-20T00:00:00.000Z" },
+              { id: 4, name: "Catherine Park", parish: "St. Elizabeth Ann Seton", diocese: "Diocese of Arlington", role: "Volunteer Catechist", type: "retreat", rating: 5, text: "I came expecting another training day. I left having encountered Christ. The Chaplet of Divine Mercy at 3 PM, after spending the whole day in His presence \u2014 I will never forget it.", date: "2026-03-01T00:00:00.000Z" },
+            ].map(t => (
+              <FadeIn key={t.id}><TestimonialCard t={t} /></FadeIn>
+            ))}
+          </div>
+          <FadeIn>
+            <div style={{ textAlign: "center", marginTop: 32 }}>
+              <Link to="/testimonials" style={{ color: brown, fontFamily: font, fontSize: 15, fontWeight: 600 }}>Read all testimonies & share yours →</Link>
             </div>
           </FadeIn>
         </div>

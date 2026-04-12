@@ -5,6 +5,7 @@ import FormationPortal from "./pages/FormationPortal";
 import ParishAdmin from "./pages/ParishAdmin";
 import IndividualAuth from "./pages/IndividualAuth";
 import Journey from "./pages/Journey";
+import Testimonials from "./pages/Testimonials";
 
 export default function App() {
   return (
@@ -15,6 +16,7 @@ export default function App() {
       <Route path="/parish-admin" element={<ParishAdmin />} />
       <Route path="/start" element={<IndividualAuth />} />
       <Route path="/journey" element={<Journey />} />
+      <Route path="/testimonials" element={<Testimonials />} />
     </Routes>
   );
 }
