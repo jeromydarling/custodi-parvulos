@@ -110,24 +110,36 @@ export default function FormationPortal() {
 
       <Divider />
 
-      {/* Coming Soon */}
+      {/* Two Paths */}
       <section style={{ ...sectionStyle, textAlign: "center", padding: "48px 24px 64px", position: "relative", zIndex: 1 }}>
         <FadeIn>
-          <h2 style={{ ...heading, fontSize: 24, marginBottom: 16 }}>Coming Soon</h2>
-          <p style={{ ...prose, maxWidth: 520, margin: "0 auto 32px" }}>
-            The free online formation is being prepared with care. In the meantime, consider bringing a Custodi Parvulos retreat to your parish.
+          <h2 style={{ ...heading, fontSize: 24, marginBottom: 16 }}>Begin the Formation</h2>
+          <p style={{ ...prose, maxWidth: 520, margin: "0 auto 40px" }}>
+            Completely free for everyone. Choose your path:
           </p>
-          <Link
-            to="/retreat"
-            style={{
-              display: "inline-block", background: brown, color: cream,
-              fontFamily: font, fontSize: 16, fontWeight: 600,
-              padding: "14px 36px", borderRadius: 8, textDecoration: "none",
-              letterSpacing: 0.5, border: "none", cursor: "pointer",
-            }}
-          >
-            Register for a Parish Retreat
-          </Link>
+        </FadeIn>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: 20, maxWidth: 600, margin: "0 auto" }}>
+          <FadeIn delay={0.1}>
+            <div style={{ background: cream, border: `1px solid ${borderC}`, borderRadius: 12, padding: "32px 24px", textAlign: "center" }}>
+              <Church size={32} color={brown} strokeWidth={1.3} style={{ display: "block", margin: "0 auto 12px" }} />
+              <h3 style={{ ...heading, fontSize: 18, marginBottom: 8 }}>Parish</h3>
+              <p style={{ fontFamily: font, fontSize: 14, color: stone, lineHeight: 1.6, marginBottom: 20 }}>Register your parish and track your parishioners' progress through the formation.</p>
+              <Link to="/parish-admin" style={{ display: "inline-block", background: brown, color: cream, padding: "12px 28px", borderRadius: 6, textDecoration: "none", fontFamily: font, fontSize: 15, fontWeight: 600 }}>Parish Admin</Link>
+            </div>
+          </FadeIn>
+          <FadeIn delay={0.2}>
+            <div style={{ background: cream, border: `1px solid ${borderC}`, borderRadius: 12, padding: "32px 24px", textAlign: "center" }}>
+              <Sparkles size={32} color={brown} strokeWidth={1.3} style={{ display: "block", margin: "0 auto 12px" }} />
+              <h3 style={{ ...heading, fontSize: 18, marginBottom: 8 }}>Individual</h3>
+              <p style={{ fontFamily: font, fontSize: 14, color: stone, lineHeight: 1.6, marginBottom: 20 }}>Take the formation on your own, at your own pace. No parish affiliation required.</p>
+              <Link to="/start" style={{ display: "inline-block", background: brown, color: cream, padding: "12px 28px", borderRadius: 6, textDecoration: "none", fontFamily: font, fontSize: 15, fontWeight: 600 }}>Start Formation</Link>
+            </div>
+          </FadeIn>
+        </div>
+        <FadeIn delay={0.3}>
+          <p style={{ ...prose, fontSize: 14, color: muted, marginTop: 32 }}>
+            Or <Link to="/retreat" style={{ color: brown, fontWeight: 600 }}>bring a retreat to your parish</Link> for an immersive in-person experience.
+          </p>
         </FadeIn>
       </section>
 
