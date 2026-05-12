@@ -4,6 +4,7 @@ import PelicanLogo from "../components/PelicanLogo";
 import FadeIn from "../components/FadeIn";
 import Divider from "../components/Divider";
 import { font, bg, ink, brown, red, stone, muted, cream, borderC, sectionStyle, prose, heading, textureOverlay, globalCSS } from "../theme";
+import Nav from "../components/Nav";
 
 const QUICK_FACTS = [
   ["Program name", "Custodi Parvulos (\"Guard the Little Ones\")"],
@@ -31,13 +32,7 @@ export default function PressKit() {
   return (
     <div style={{ fontFamily: font, background: bg, color: ink, minHeight: "100vh", position: "relative" }}>
       <div style={textureOverlay} />
-      <nav style={{ position: "sticky", top: 0, zIndex: 10, background: `${bg}ee`, backdropFilter: "blur(8px)", borderBottom: `1px solid ${borderC}`, padding: "10px 24px", display: "flex", alignItems: "center", justifyContent: "space-between", maxWidth: 900, margin: "0 auto" }}>
-        <Link to="/" style={{ display: "flex", alignItems: "center", gap: 10, textDecoration: "none" }}>
-          <PelicanLogo size={32} color={brown} />
-          <span style={{ fontFamily: font, fontWeight: 700, color: brown, fontSize: 15 }}>Custodi Parvulos</span>
-        </Link>
-        <Link to="/" style={{ fontFamily: font, color: stone, textDecoration: "none", fontSize: 14 }}>Home</Link>
-      </nav>
+      <Nav />
 
       <div style={{ ...sectionStyle, maxWidth: 760, padding: "48px 24px", position: "relative", zIndex: 1 }}>
         <FadeIn>

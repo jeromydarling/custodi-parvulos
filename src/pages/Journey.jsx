@@ -5,6 +5,7 @@ import PelicanLogo from "../components/PelicanLogo";
 import FadeIn from "../components/FadeIn";
 import Divider from "../components/Divider";
 import { font, bg, ink, brown, red, stone, muted, cream, borderC, sectionStyle, prose, heading, textureOverlay, globalCSS } from "../theme";
+import Nav from "../components/Nav";
 import { getCurrentUser, getProgress, completePart, logout } from "../store";
 import { PARTS } from "../custodi-content";
 import MetBackground, { MetInline } from "../components/MetArt";
@@ -32,18 +33,14 @@ export default function Journey() {
   return (
     <div style={{ fontFamily: font, background: bg, color: ink, minHeight: "100vh", position: "relative" }}>
       <div style={textureOverlay} />
-      <nav style={{ position: "sticky", top: 0, zIndex: 10, background: `${bg}ee`, backdropFilter: "blur(8px)", borderBottom: `1px solid ${borderC}`, padding: "10px 24px", display: "flex", alignItems: "center", justifyContent: "space-between", maxWidth: 900, margin: "0 auto" }}>
-        <Link to="/" style={{ display: "flex", alignItems: "center", gap: 10, textDecoration: "none" }}>
-          <PelicanLogo size={32} color={brown} />
-          <span style={{ fontFamily: font, fontWeight: 700, color: brown, fontSize: 15 }}>Custodi Parvulos</span>
-        </Link>
-        <div style={{ display: "flex", gap: 16, alignItems: "center" }}>
-          <span style={{ fontSize: 13, color: stone }}>{user.name}</span>
+      <Nav rightSlot={
+        <span style={{ display: "flex", alignItems: "center", gap: 12, fontSize: 13 }}>
+          <span style={{ color: stone }}>{user.name}</span>
           <button onClick={handleLogout} style={{ background: "none", border: "none", fontFamily: font, color: stone, fontSize: 13, cursor: "pointer", display: "flex", alignItems: "center", gap: 4 }}>
             <LogOut size={13} /> Sign Out
           </button>
-        </div>
-      </nav>
+        </span>
+      } />
 
       <div style={{ ...sectionStyle, maxWidth: 760, padding: "48px 24px", position: "relative", zIndex: 1 }}>
         {/* Header & progress */}

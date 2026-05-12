@@ -5,6 +5,7 @@ import PelicanLogo from "../components/PelicanLogo";
 import FadeIn from "../components/FadeIn";
 import Divider from "../components/Divider";
 import { font, bg, ink, brown, red, stone, muted, cream, borderC, sectionStyle, prose, heading, textureOverlay, globalCSS } from "../theme";
+import Nav from "../components/Nav";
 
 function ymd(d) {
   return d.toISOString().slice(0, 10);
@@ -54,17 +55,7 @@ export default function DailyReadings() {
   return (
     <div style={{ fontFamily: font, background: bg, color: ink, minHeight: "100vh", position: "relative" }}>
       <div style={textureOverlay} />
-      <nav style={{ position: "sticky", top: 0, zIndex: 10, background: `${bg}ee`, backdropFilter: "blur(8px)", borderBottom: `1px solid ${borderC}`, padding: "10px 24px", display: "flex", alignItems: "center", justifyContent: "space-between", maxWidth: 900, margin: "0 auto" }}>
-        <Link to="/" style={{ display: "flex", alignItems: "center", gap: 10, textDecoration: "none" }}>
-          <PelicanLogo size={32} color={brown} />
-          <span style={{ fontFamily: font, fontWeight: 700, color: brown, fontSize: 15 }}>Custodi Parvulos</span>
-        </Link>
-        <div style={{ display: "flex", gap: 20 }}>
-          <Link to="/" style={{ fontFamily: font, color: stone, textDecoration: "none", fontSize: 14 }}>Home</Link>
-          <Link to="/formation" style={{ fontFamily: font, color: stone, textDecoration: "none", fontSize: 14 }}>Formation</Link>
-          <Link to="/resources" style={{ fontFamily: font, color: stone, textDecoration: "none", fontSize: 14 }}>Resources</Link>
-        </div>
-      </nav>
+      <Nav />
 
       <div style={{ ...sectionStyle, maxWidth: 700, padding: "48px 24px", position: "relative", zIndex: 1 }}>
         <FadeIn>

@@ -5,6 +5,7 @@ import PelicanLogo from "../components/PelicanLogo";
 import FadeIn from "../components/FadeIn";
 import Divider from "../components/Divider";
 import { font, bg, ink, brown, red, stone, muted, cream, borderC, sectionStyle, prose, heading, textureOverlay, globalCSS } from "../theme";
+import Nav from "../components/Nav";
 
 const tabStyle = (active) => ({ padding: "10px 18px", border: `1px solid ${active ? borderC : "transparent"}`, borderBottom: active ? `2px solid ${cream}` : `1px solid ${borderC}`, background: active ? cream : "transparent", fontFamily: font, fontSize: 14, fontWeight: active ? 700 : 400, color: active ? brown : stone, cursor: "pointer", borderRadius: "6px 6px 0 0", marginBottom: -1 });
 
@@ -130,17 +131,7 @@ export default function Resources() {
   return (
     <div style={{ fontFamily: font, background: bg, color: ink, minHeight: "100vh", position: "relative" }}>
       <div style={textureOverlay} />
-      <nav style={{ position: "sticky", top: 0, zIndex: 10, background: `${bg}ee`, backdropFilter: "blur(8px)", borderBottom: `1px solid ${borderC}`, padding: "10px 24px", display: "flex", alignItems: "center", justifyContent: "space-between", maxWidth: 900, margin: "0 auto" }}>
-        <Link to="/" style={{ display: "flex", alignItems: "center", gap: 10, textDecoration: "none" }}>
-          <PelicanLogo size={32} color={brown} />
-          <span style={{ fontFamily: font, fontWeight: 700, color: brown, fontSize: 15 }}>Custodi Parvulos</span>
-        </Link>
-        <div style={{ display: "flex", gap: 20 }}>
-          <Link to="/" style={{ fontFamily: font, color: stone, textDecoration: "none", fontSize: 14 }}>Home</Link>
-          <Link to="/retreat" style={{ fontFamily: font, color: stone, textDecoration: "none", fontSize: 14 }}>Retreat</Link>
-          <Link to="/formation" style={{ fontFamily: font, color: stone, textDecoration: "none", fontSize: 14 }}>Formation</Link>
-        </div>
-      </nav>
+      <Nav />
 
       <div style={{ ...sectionStyle, maxWidth: 820, padding: "48px 24px", position: "relative", zIndex: 1 }}>
         <FadeIn>

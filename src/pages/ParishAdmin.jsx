@@ -5,6 +5,7 @@ import PelicanLogo from "../components/PelicanLogo";
 import FadeIn from "../components/FadeIn";
 import Divider from "../components/Divider";
 import { font, bg, ink, brown, red, stone, muted, cream, borderC, sectionStyle, prose, heading, textureOverlay, globalCSS } from "../theme";
+import Nav from "../components/Nav";
 import { getCurrentUser, getParish, addParishioner, removeParishioner, logout, registerParish, loginParishAdmin, issueCertificate } from "../store";
 
 const inputStyle = { width: "100%", background: cream, border: `1px solid ${borderC}`, borderRadius: 6, padding: "12px 16px", fontFamily: font, fontSize: 16, color: ink, outline: "none", boxSizing: "border-box" };
@@ -65,20 +66,11 @@ export default function ParishAdmin() {
   return (
     <div style={{ fontFamily: font, background: bg, color: ink, minHeight: "100vh", position: "relative" }}>
       <div style={textureOverlay} />
-      <nav style={{ position: "sticky", top: 0, zIndex: 10, background: `${bg}ee`, backdropFilter: "blur(8px)", borderBottom: `1px solid ${borderC}`, padding: "10px 24px", display: "flex", alignItems: "center", justifyContent: "space-between", maxWidth: 900, margin: "0 auto" }}>
-        <Link to="/" style={{ display: "flex", alignItems: "center", gap: 10, textDecoration: "none" }}>
-          <PelicanLogo size={32} color={brown} />
-          <span style={{ fontFamily: font, fontWeight: 700, color: brown, fontSize: 15 }}>Custodi Parvulos</span>
-        </Link>
-        <div style={{ display: "flex", gap: 20, alignItems: "center" }}>
-          <Link to="/" style={{ fontFamily: font, color: stone, textDecoration: "none", fontSize: 14 }}>Home</Link>
-          {user?.type === "parish_admin" && (
-            <button onClick={handleLogout} style={{ background: "none", border: "none", fontFamily: font, color: stone, fontSize: 14, cursor: "pointer", display: "flex", alignItems: "center", gap: 4 }}>
-              <LogOut size={14} /> Sign Out
-            </button>
-          )}
-        </div>
-      </nav>
+      <Nav rightSlot={user?.type === "parish_admin" ? (
+        <button onClick={handleLogout} style={{ background: "none", border: "none", fontFamily: font, color: stone, fontSize: 13, cursor: "pointer", display: "flex", alignItems: "center", gap: 4 }}>
+          <LogOut size={14} /> Sign Out
+        </button>
+      ) : null} />
 
       <div style={{ ...sectionStyle, maxWidth: 700, padding: "48px 24px", position: "relative", zIndex: 1 }}>
         {view === "auth" && (

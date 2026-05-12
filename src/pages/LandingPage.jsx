@@ -4,6 +4,7 @@ import { Sparkles, Diamond, Hexagon, Cross, Church, Sun, Circle, Leaf, Star, Bir
 import PelicanLogo from "../components/PelicanLogo";
 import FadeIn from "../components/FadeIn";
 import Divider from "../components/Divider";
+import Nav from "../components/Nav";
 import { font, bg, ink, brown, red, stone, muted, cream, borderC, sectionStyle, prose, heading, textureOverlay, globalCSS } from "../theme";
 import MetBackground, { MetInline } from "../components/MetArt";
 
@@ -36,19 +37,7 @@ export default function LandingPage() {
   return (
     <div style={{ fontFamily: font, background: bg, color: ink, minHeight: "100vh", position: "relative" }}>
       <div style={textureOverlay} />
-      {/* NAV */}
-      <nav style={{ position: "sticky", top: 0, zIndex: 10, background: `${bg}ee`, backdropFilter: "blur(8px)", borderBottom: `1px solid ${borderC}`, padding: "10px 24px", display: "flex", alignItems: "center", justifyContent: "space-between", maxWidth: 900, margin: "0 auto" }}>
-        <Link to="/" style={{ display: "flex", alignItems: "center", gap: 10, textDecoration: "none" }}>
-          <PelicanLogo size={32} color={brown} />
-          <span style={{ fontFamily: font, fontWeight: 700, color: brown, fontSize: 15 }}>Custodi Parvulos</span>
-        </Link>
-        <div style={{ display: "flex", gap: 20 }}>
-          <Link to="/formation" style={{ fontFamily: font, color: stone, textDecoration: "none", fontSize: 14 }}>Formation</Link>
-          <Link to="/retreat" style={{ fontFamily: font, color: red, textDecoration: "none", fontSize: 14, fontWeight: 600 }}>Parish Retreat</Link>
-          <Link to="/resources" style={{ fontFamily: font, color: stone, textDecoration: "none", fontSize: 14 }}>Resources</Link>
-          <Link to="/readings" style={{ fontFamily: font, color: stone, textDecoration: "none", fontSize: 14 }}>Readings</Link>
-        </div>
-      </nav>
+      <Nav />
 
       {/* HERO */}
       <MetBackground mapKey="landing_hero" opacity={0.08} style={{ zIndex: 1 }}>

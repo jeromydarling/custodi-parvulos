@@ -4,6 +4,7 @@ import PelicanLogo from "../components/PelicanLogo";
 import FadeIn from "../components/FadeIn";
 import Divider from "../components/Divider";
 import { font, bg, ink, brown, red, stone, muted, cream, borderC, sectionStyle, prose, heading, textureOverlay, globalCSS } from "../theme";
+import Nav from "../components/Nav";
 const parts = [
   { latin: "Creatio", english: "Creation", Icon: Sparkles },
   { latin: "Lapsus", english: "The Fall", Icon: Diamond },
@@ -35,16 +36,7 @@ export default function FormationPortal() {
       <div style={textureOverlay} />
 
       {/* Nav */}
-      <nav style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "16px 32px", borderBottom: `1px solid ${borderC}`, background: cream, position: "relative", zIndex: 2 }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          <PelicanLogo size={32} />
-          <span style={{ fontFamily: font, fontWeight: 700, color: brown, fontSize: 16 }}>Custodi Parvulos</span>
-        </div>
-        <div style={{ display: "flex", gap: 24 }}>
-          <Link to="/" style={navLink}>Home</Link>
-          <Link to="/retreat" style={navLink}>Parish Retreat</Link>
-        </div>
-      </nav>
+      <Nav />
 
       {/* Hero */}
       <header style={{ textAlign: "center", padding: "72px 24px 48px", position: "relative", zIndex: 1 }}>
