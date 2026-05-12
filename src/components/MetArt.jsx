@@ -1,27 +1,22 @@
 import { useState, useEffect } from "react";
-import { fetchMetArt, ART_MAP, artKey } from "../met-art";
+import { searchMetArt, ART_SEARCHES, artKey } from "../met-art";
 
 const font = "'Palatino Linotype', 'Book Antiqua', Palatino, Georgia, serif";
 
-export default function MetArt({ artId, mapKey, partId, sectionIndex, size = "medium", style = {} }) {
+export default function MetArt({ mapKey, partId, sectionIndex, size = "medium", style = {} }) {
   const [art, setArt] = useState(null);
-  const [error, setError] = useState(false);
 
-  const objectId = artId || ART_MAP[mapKey] || ART_MAP[artKey(partId, sectionIndex)];
+  const key = mapKey || artKey(partId, sectionIndex);
+  const search = ART_SEARCHES[key];
 
   useEffect(() => {
-    if (!objectId) return;
-    fetchMetArt(objectId).then(data => {
-      if (!data) { setError(true); return; }
-      // Filter out secular portraits and non-religious subjects
-      const t = (data.title || "").toLowerCase();
-      const skip = ["portrait of a woman", "portrait of a man", "portrait of a lady", "portrait of a gentleman"];
-      if (skip.some(s => t === s)) { setError(true); return; }
-      setArt(data);
+    if (!search) return;
+    searchMetArt(search.q, search.i).then(data => {
+      if (data) setArt(data);
     });
-  }, [objectId]);
+  }, [key]);
 
-  if (!objectId || error || !art) return null;
+  if (!art) return null;
 
   const sizes = {
     small: { maxWidth: 200, maxHeight: 160 },

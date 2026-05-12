@@ -1,16 +1,14 @@
-// MET Museum public domain art mapped to Custodi Parvulos formation sections.
-// Images are fetched client-side from the MET Collection API at runtime.
-// Object IDs reference works in the Metropolitan Museum of Art's Open Access collection.
+// MET Museum public domain art — searches by keyword at runtime
+// so we always get relevant religious/sacred art, not random portraits.
 
-const MET_API = "https://collectionapi.metmuseum.org/public/collection/v1/objects";
-
-// Cache fetched images in memory so we don't re-fetch on every render
+const MET_BASE = "https://collectionapi.metmuseum.org/public/collection/v1";
 const cache = {};
+const searchCache = {};
 
 export async function fetchMetArt(objectId) {
   if (cache[objectId]) return cache[objectId];
   try {
-    const r = await fetch(`${MET_API}/${objectId}`);
+    const r = await fetch(`${MET_BASE}/objects/${objectId}`);
     if (!r.ok) return null;
     const data = await r.json();
     if (!data.isPublicDomain || !data.primaryImageSmall) return null;
@@ -32,55 +30,82 @@ export async function fetchMetArt(objectId) {
   }
 }
 
-// Curated mapping: each formation section gets one painting.
-// These are all public domain works in the MET's Open Access collection.
+// Search MET API by keyword, find a public domain painting with an image
+export async function searchMetArt(query, index = 0) {
+  const cacheKey = `${query}_${index}`;
+  if (searchCache[cacheKey]) return searchCache[cacheKey];
+  try {
+    const r = await fetch(`${MET_BASE}/search?q=${encodeURIComponent(query)}&hasImages=true&isPublicDomain=true&departmentId=11`);
+    if (!r.ok) return null;
+    const data = await r.json();
+    if (!data.objectIDs || data.objectIDs.length === 0) return null;
+    // Pick the object at the given index (wrapping around)
+    const id = data.objectIDs[index % data.objectIDs.length];
+    const art = await fetchMetArt(id);
+    if (art) {
+      searchCache[cacheKey] = art;
+      return art;
+    }
+    // If first pick has no image, try next few
+    for (let i = 1; i < Math.min(5, data.objectIDs.length); i++) {
+      const fallback = await fetchMetArt(data.objectIDs[(index + i) % data.objectIDs.length]);
+      if (fallback) {
+        searchCache[cacheKey] = fallback;
+        return fallback;
+      }
+    }
+    return null;
+  } catch {
+    return null;
+  }
+}
 
-export const ART_MAP = {
-  // ═══ PART I: CREATION (Creatio) ═══
-  creation_header: 437984,       // Giovanni di Paolo, "The Creation of the World and the Expulsion from Paradise"
-  creation_section_0: 459093,    // Robert Campin workshop, "The Annunciation Triptych (Mérode Altarpiece)"
-  creation_section_1: 438754,    // Raphael, "Madonna and Child Enthroned with Saints"
-  creation_section_2: 436524,    // Andrea Mantegna, "The Crucifixion"
-  creation_section_3: 436573,    // Georges de La Tour, "The Penitent Magdalen"
+// Keyword-based mapping: each section searches for specific religious art
+export const ART_SEARCHES = {
+  // Part I: Creation
+  creation_header: { q: "creation adam genesis", i: 0 },
+  creation_section_0: { q: "annunciation virgin mary angel", i: 0 },
+  creation_section_1: { q: "madonna child enthroned", i: 0 },
+  creation_section_2: { q: "annunciation", i: 2 },
+  creation_section_3: { q: "eucharist last supper", i: 0 },
 
-  // ═══ PART II: THE FALL (Lapsus) ═══
-  fall_header: 437826,           // Jan van Eyck, "The Crucifixion; The Last Judgment"
-  fall_section_0: 436002,        // Caravaggio, "The Denial of Saint Peter"
-  fall_section_1: 436535,        // Hieronymus Bosch, "The Adoration of the Magi"
-  fall_section_2: 437329,        // Bartolomé Esteban Murillo, "The Virgin and Child"
-  fall_section_3: 438012,        // Giovanni Bellini, "Madonna and Child"
+  // Part II: The Fall
+  fall_header: { q: "expulsion paradise adam eve", i: 0 },
+  fall_section_0: { q: "agony garden gethsemane", i: 0 },
+  fall_section_1: { q: "crucifixion christ", i: 1 },
+  fall_section_2: { q: "lamentation christ dead", i: 0 },
+  fall_section_3: { q: "penitent magdalene", i: 0 },
 
-  // ═══ PART III: FORMATION OF A HOLY PEOPLE (Formatio) ═══
-  formation_header: 435882,      // El Greco, "The Vision of Saint John" or Agony in the Garden
-  formation_section_0: 437133,   // Duccio di Buoninsegna, "Madonna and Child"
-  formation_section_1: 435888,   // El Greco, "View of Toledo"
-  formation_section_2: 437869,   // Rogier van der Weyden, "Christ Appearing to His Mother"
-  formation_section_3: 459093,   // Robert Campin, "The Annunciation Triptych"
+  // Part III: Formation
+  formation_header: { q: "moses tablets commandments", i: 0 },
+  formation_section_0: { q: "holy family", i: 0 },
+  formation_section_1: { q: "denial saint peter", i: 0 },
+  formation_section_2: { q: "prophets saints", i: 0 },
+  formation_section_3: { q: "baptism christ", i: 0 },
 
-  // ═══ PART IV: THE MESSIAH (Messias) ═══
-  messiah_header: 436524,        // Andrea Mantegna, "The Crucifixion"
-  messiah_section_0: 437984,     // Giovanni di Paolo, "The Creation of the World"
-  messiah_section_1: 438012,     // Giovanni Bellini, "Madonna and Child"
-  messiah_section_2: 438722,     // El Greco, "The Vision of Saint John"
-  messiah_section_3: 437826,     // Jan van Eyck, "The Crucifixion; The Last Judgment"
+  // Part IV: The Messiah
+  messiah_header: { q: "crucifixion christ calvary", i: 0 },
+  messiah_section_0: { q: "pieta", i: 0 },
+  messiah_section_1: { q: "resurrection christ", i: 0 },
+  messiah_section_2: { q: "christ healing", i: 0 },
+  messiah_section_3: { q: "last judgment", i: 0 },
 
-  // ═══ PART V: THE CHURCH (Ecclesia) ═══
-  ecclesia_header: 438722,       // El Greco, "The Vision of Saint John"
-  ecclesia_section_0: 437133,    // Duccio di Buoninsegna, "Madonna and Child"
-  ecclesia_section_1: 436573,    // Georges de La Tour, "The Penitent Magdalen"
-  ecclesia_section_2: 436002,    // Caravaggio, "The Denial of Saint Peter"
-  ecclesia_section_3: 437869,    // Rogier van der Weyden, "Christ Appearing to His Mother"
+  // Part V: The Church
+  ecclesia_header: { q: "pentecost holy spirit apostles", i: 0 },
+  ecclesia_section_0: { q: "madonna child", i: 1 },
+  ecclesia_section_1: { q: "saints communion", i: 0 },
+  ecclesia_section_2: { q: "christ glory majesty", i: 0 },
+  ecclesia_section_3: { q: "ascension christ", i: 0 },
 
-  // ═══ MARKETING / GENERAL ═══
-  landing_hero: 437984,          // Giovanni di Paolo, "The Creation of the World"
-  landing_pillars: 437826,       // Jan van Eyck, "The Crucifixion; The Last Judgment"
-  retreat_hero: 436573,          // Georges de La Tour, "The Penitent Magdalen"
-  retreat_schedule: 437133,      // Duccio, "Madonna and Child"
-  formation_hero: 437984,        // Giovanni di Paolo, "The Creation of the World"
-  readings_hero: 435888,         // El Greco, "View of Toledo"
+  // Marketing
+  landing_hero: { q: "creation world genesis", i: 0 },
+  landing_pillars: { q: "crucifixion last judgment", i: 0 },
+  retreat_hero: { q: "adoration blessed sacrament monstrance", i: 0 },
+  retreat_schedule: { q: "madonna child", i: 2 },
+  formation_hero: { q: "annunciation virgin", i: 0 },
+  readings_hero: { q: "saint reading book scripture", i: 0 },
 };
 
-// Helper: get the art key for a part + section index
 export function artKey(partId, sectionIndex) {
   if (sectionIndex === undefined || sectionIndex === null) return `${partId}_header`;
   return `${partId}_section_${sectionIndex}`;
