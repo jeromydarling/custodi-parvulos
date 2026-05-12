@@ -40,43 +40,43 @@ export const ART_MAP = {
   creation_header: 437984,       // Giovanni di Paolo, "The Creation of the World and the Expulsion from Paradise"
   creation_section_0: 459093,    // Robert Campin workshop, "The Annunciation Triptych (Mérode Altarpiece)"
   creation_section_1: 438754,    // Raphael, "Madonna and Child Enthroned with Saints"
-  creation_section_2: 437761,    // Fra Angelico, "The Annunciation"
+  creation_section_2: 436524,    // Andrea Mantegna, "The Crucifixion"
   creation_section_3: 436573,    // Georges de La Tour, "The Penitent Magdalen"
 
   // ═══ PART II: THE FALL (Lapsus) ═══
-  fall_header: 438417,           // Lucas Cranach the Elder, "The Judgment of Paris"
-  fall_section_0: 435882,        // El Greco, "The Agony in the Garden" (Christ in Gethsemane)
+  fall_header: 437826,           // Jan van Eyck, "The Crucifixion; The Last Judgment"
+  fall_section_0: 436002,        // Caravaggio, "The Denial of Saint Peter"
   fall_section_1: 436535,        // Hieronymus Bosch, "The Adoration of the Magi"
-  fall_section_2: 437880,        // Gerard David, "Christ Carrying the Cross" (later? let's use Lamentation)
-  fall_section_3: 437329,        // Bartolomé Esteban Murillo, "The Virgin and Child"
+  fall_section_2: 437329,        // Bartolomé Esteban Murillo, "The Virgin and Child"
+  fall_section_3: 438012,        // Giovanni Bellini, "Madonna and Child"
 
   // ═══ PART III: FORMATION OF A HOLY PEOPLE (Formatio) ═══
-  formation_header: 435621,      // Nicolas Poussin, "The Abduction of the Sabine Women" (correction: let's use Moses)
-  formation_section_0: 437397,   // Rembrandt, "Flora"
-  formation_section_1: 436002,   // Caravaggio, "The Denial of Saint Peter"
-  formation_section_2: 459027,   // Petrus Christus, "A Goldsmith in His Shop"
-  formation_section_3: 435888,   // El Greco, "View of Toledo"
+  formation_header: 435882,      // El Greco, "The Vision of Saint John" or Agony in the Garden
+  formation_section_0: 437133,   // Duccio di Buoninsegna, "Madonna and Child"
+  formation_section_1: 435888,   // El Greco, "View of Toledo"
+  formation_section_2: 437869,   // Rogier van der Weyden, "Christ Appearing to His Mother"
+  formation_section_3: 459093,   // Robert Campin, "The Annunciation Triptych"
 
   // ═══ PART IV: THE MESSIAH (Messias) ═══
   messiah_header: 436524,        // Andrea Mantegna, "The Crucifixion"
-  messiah_section_0: 459099,     // Hans Memling, "Tommaso di Folco Portinari; Maria Portinari"
+  messiah_section_0: 437984,     // Giovanni di Paolo, "The Creation of the World"
   messiah_section_1: 438012,     // Giovanni Bellini, "Madonna and Child"
-  messiah_section_2: 436105,     // Pieter Bruegel the Elder, "The Harvesters"
+  messiah_section_2: 438722,     // El Greco, "The Vision of Saint John"
   messiah_section_3: 437826,     // Jan van Eyck, "The Crucifixion; The Last Judgment"
 
   // ═══ PART V: THE CHURCH (Ecclesia) ═══
   ecclesia_header: 438722,       // El Greco, "The Vision of Saint John"
   ecclesia_section_0: 437133,    // Duccio di Buoninsegna, "Madonna and Child"
-  ecclesia_section_1: 436282,    // Georges de La Tour, "The Fortune Teller" (alternative)
-  ecclesia_section_2: 435809,    // Caravaggio, "The Musicians"
+  ecclesia_section_1: 436573,    // Georges de La Tour, "The Penitent Magdalen"
+  ecclesia_section_2: 436002,    // Caravaggio, "The Denial of Saint Peter"
   ecclesia_section_3: 437869,    // Rogier van der Weyden, "Christ Appearing to His Mother"
 
   // ═══ MARKETING / GENERAL ═══
   landing_hero: 437984,          // Giovanni di Paolo, "The Creation of the World"
-  landing_pillars: 438754,       // Raphael
+  landing_pillars: 437826,       // Jan van Eyck, "The Crucifixion; The Last Judgment"
   retreat_hero: 436573,          // Georges de La Tour, "The Penitent Magdalen"
   retreat_schedule: 437133,      // Duccio, "Madonna and Child"
-  formation_hero: 437761,        // Fra Angelico, "The Annunciation"
+  formation_hero: 437984,        // Giovanni di Paolo, "The Creation of the World"
   readings_hero: 435888,         // El Greco, "View of Toledo"
 };
 

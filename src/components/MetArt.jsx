@@ -12,8 +12,12 @@ export default function MetArt({ artId, mapKey, partId, sectionIndex, size = "me
   useEffect(() => {
     if (!objectId) return;
     fetchMetArt(objectId).then(data => {
-      if (data) setArt(data);
-      else setError(true);
+      if (!data) { setError(true); return; }
+      // Filter out secular portraits and non-religious subjects
+      const t = (data.title || "").toLowerCase();
+      const skip = ["portrait of a woman", "portrait of a man", "portrait of a lady", "portrait of a gentleman"];
+      if (skip.some(s => t === s)) { setError(true); return; }
+      setArt(data);
     });
   }, [objectId]);
 
