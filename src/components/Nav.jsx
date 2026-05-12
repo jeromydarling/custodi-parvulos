@@ -12,8 +12,9 @@ const borderC = "#E8DCC8";
 const cream = "#FFFDF7";
 
 const LINKS = [
+  { to: "/start", label: "Start", color: red, bold: true },
   { to: "/formation", label: "Formation", color: stone },
-  { to: "/retreat", label: "Parish Retreat", color: red, bold: true },
+  { to: "/retreat", label: "Parish Retreat", color: stone },
   { to: "/resources", label: "Resources", color: stone },
   { to: "/readings", label: "Readings", color: stone },
 ];
