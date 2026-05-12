@@ -5,7 +5,7 @@ import PelicanLogo from "../components/PelicanLogo";
 import FadeIn from "../components/FadeIn";
 import Divider from "../components/Divider";
 import { font, bg, ink, brown, red, stone, muted, cream, borderC, sectionStyle, prose, heading, textureOverlay, globalCSS } from "../theme";
-import { TestimonialCard } from "./Testimonials";
+import MetArt from "../components/MetArt";
 
 export default function LandingPage() {
   const [expandedPart, setExpandedPart] = useState(null);
@@ -47,7 +47,6 @@ export default function LandingPage() {
           <Link to="/retreat" style={{ fontFamily: font, color: red, textDecoration: "none", fontSize: 14, fontWeight: 600 }}>Parish Retreat</Link>
           <Link to="/resources" style={{ fontFamily: font, color: stone, textDecoration: "none", fontSize: 14 }}>Resources</Link>
           <Link to="/readings" style={{ fontFamily: font, color: stone, textDecoration: "none", fontSize: 14 }}>Readings</Link>
-          <Link to="/testimonials" style={{ fontFamily: font, color: stone, textDecoration: "none", fontSize: 14 }}>Testimonies</Link>
         </div>
       </nav>
 
@@ -103,6 +102,7 @@ export default function LandingPage() {
           </FadeIn>
           <FadeIn delay={0.35}>
             <p style={prose}>Instead of tests to pass, participants engage in Lectio Divina, examinations of conscience, scenario-based discernment, and private journaling. The goal is not a checkbox — it is a conversion of heart.</p>
+            <MetArt mapKey="landing_hero" size="large" />
           </FadeIn>
           <FadeIn delay={0.45}>
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))", gap: 24, marginTop: 48 }}>
@@ -243,7 +243,8 @@ export default function LandingPage() {
         <div style={sectionStyle}>
           <FadeIn>
             <p style={{ color: red, fontSize: 12, letterSpacing: 3, textAlign: "center", fontWeight: 700, marginBottom: 8 }}>BUILT ON</p>
-            <h2 style={{ ...heading, fontSize: "clamp(24px, 5vw, 30px)", textAlign: "center", marginBottom: 48 }}>Three Pillars of Truth</h2>
+            <h2 style={{ ...heading, fontSize: "clamp(24px, 5vw, 30px)", textAlign: "center", marginBottom: 16 }}>Three Pillars of Truth</h2>
+            <MetArt mapKey="landing_pillars" size="medium" />
           </FadeIn>
           {[
             { title: "The Theology of the Body", author: "St. John Paul II, 1979–1984", desc: "129 catechetical addresses revealing that the human body is not merely biological — it is a revelation of the person, made for self-giving love." },
@@ -292,30 +293,6 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* TESTIMONIES */}
-      <section style={{ position: "relative", zIndex: 1, padding: "80px 24px" }}>
-        <div style={sectionStyle}>
-          <FadeIn>
-            <p style={{ color: red, fontSize: 12, letterSpacing: 3, textAlign: "center", fontWeight: 700, marginBottom: 8 }}>TESTIMONIES</p>
-            <h2 style={{ ...heading, fontSize: "clamp(24px, 5vw, 30px)", textAlign: "center", marginBottom: 16 }}>Voices of the Faithful</h2>
-            <p style={{ color: stone, fontSize: 16, textAlign: "center", fontStyle: "italic", marginBottom: 40 }}>What parishes are saying about their experience</p>
-          </FadeIn>
-          <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-            {[
-              { id: 1, name: "Fr. Michael Torres", parish: "St. Thomas More", diocese: "Diocese of Austin", role: "Pastor", type: "retreat", rating: 5, text: "In twenty years of priesthood, this is the first safe environment program that felt like prayer instead of paperwork. My entire staff was moved.", date: "2026-03-15T00:00:00.000Z" },
-              { id: 2, name: "Maria Gonzalez", parish: "Our Lady of Guadalupe", diocese: "Archdiocese of San Antonio", role: "DRE / Safe Environment Coordinator", type: "retreat", rating: 5, text: "I have been the safe environment coordinator for eight years and have watched people click through VIRTUS with glazed eyes. At our retreat, people were weeping during the Lectio Divina.", date: "2026-02-20T00:00:00.000Z" },
-              { id: 4, name: "Catherine Park", parish: "St. Elizabeth Ann Seton", diocese: "Diocese of Arlington", role: "Volunteer Catechist", type: "retreat", rating: 5, text: "I came expecting another training day. I left having encountered Christ. The Chaplet of Divine Mercy at 3 PM, after spending the whole day in His presence \u2014 I will never forget it.", date: "2026-03-01T00:00:00.000Z" },
-            ].map(t => (
-              <FadeIn key={t.id}><TestimonialCard t={t} /></FadeIn>
-            ))}
-          </div>
-          <FadeIn>
-            <div style={{ textAlign: "center", marginTop: 32 }}>
-              <Link to="/testimonials" style={{ color: brown, fontFamily: font, fontSize: 15, fontWeight: 600 }}>Read all testimonies & share yours →</Link>
-            </div>
-          </FadeIn>
-        </div>
-      </section>
 
       {/* CLOSING */}
       <section style={{ position: "relative", zIndex: 1, padding: "80px 24px 60px" }}>

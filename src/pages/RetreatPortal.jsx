@@ -6,6 +6,7 @@ import FadeIn from "../components/FadeIn";
 import Divider from "../components/Divider";
 import { font, bg, ink, brown, red, stone, muted, cream, borderC, sectionStyle, prose, heading, textureOverlay, globalCSS } from "../theme";
 import { saveRetreatRequest, addNewsletterSubscriber } from "../store";
+import MetArt from "../components/MetArt";
 
 const inputStyle = { width: "100%", background: cream, border: `1px solid ${borderC}`, borderRadius: 6, padding: "12px 16px", fontFamily: font, fontSize: 16, color: ink, outline: "none", boxSizing: "border-box" };
 
@@ -75,6 +76,7 @@ export default function RetreatPortal() {
         </FadeIn>
         <FadeIn delay={0.4}>
           <p style={{ ...prose, maxWidth: 580, margin: "24px auto 0", fontSize: 17 }}>A one-day parish retreat where the entire Custodi Parvulos formation unfolds in the presence of the Blessed Sacrament</p>
+          <MetArt mapKey="retreat_hero" size="large" />
         </FadeIn>
       </section>
 

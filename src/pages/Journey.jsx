@@ -7,6 +7,7 @@ import Divider from "../components/Divider";
 import { font, bg, ink, brown, red, stone, muted, cream, borderC, sectionStyle, prose, heading, textureOverlay, globalCSS } from "../theme";
 import { getCurrentUser, getProgress, completePart, logout } from "../store";
 import { PARTS } from "../custodi-content";
+import MetArt from "../components/MetArt";
 
 export default function Journey() {
   const nav = useNavigate();
@@ -104,6 +105,7 @@ export default function Journey() {
               <h2 style={{ ...heading, fontSize: 30, marginTop: 4 }}>{active.title}</h2>
               <p style={{ color: red, fontSize: 15, fontStyle: "italic", marginTop: 4 }}>{active.latin}</p>
               <p style={{ color: stone, fontSize: 16, marginTop: 8 }}>{active.subtitle}</p>
+              <MetArt partId={active.id} size="hero" />
             </div>
 
             {/* Scripture */}
@@ -151,6 +153,8 @@ export default function Journey() {
                   {sec.content.split("\n\n").map((para, i) => (
                     <p key={i} style={{ ...prose, marginBottom: 16 }}>{para}</p>
                   ))}
+
+                  <MetArt partId={active.id} sectionIndex={sectionIndex} size="medium" />
 
                   {/* Reflection pause */}
                   {sec.reflectionPause && (
