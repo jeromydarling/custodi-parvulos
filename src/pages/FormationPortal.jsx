@@ -4,6 +4,7 @@ import PelicanLogo from "../components/PelicanLogo";
 import FadeIn from "../components/FadeIn";
 import Divider from "../components/Divider";
 import { font, bg, ink, brown, red, stone, muted, cream, borderC, sectionStyle, prose, heading, textureOverlay, globalCSS } from "../theme";
+import MetArt from "../components/MetArt";
 
 const parts = [
   { latin: "Creatio", english: "Creation", Icon: Sparkles },
@@ -58,8 +59,9 @@ export default function FormationPortal() {
         </FadeIn>
         <FadeIn delay={0.3}>
           <p style={{ ...prose, marginTop: 20, color: muted, fontSize: 16 }}>
-            The free online formation — coming soon
+            The free online formation — completely free of charge
           </p>
+          <MetArt mapKey="formation_hero" size="large" />
         </FadeIn>
         <Divider />
       </header>

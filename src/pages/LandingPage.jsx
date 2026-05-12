@@ -5,6 +5,7 @@ import PelicanLogo from "../components/PelicanLogo";
 import FadeIn from "../components/FadeIn";
 import Divider from "../components/Divider";
 import { font, bg, ink, brown, red, stone, muted, cream, borderC, sectionStyle, prose, heading, textureOverlay, globalCSS } from "../theme";
+import MetArt from "../components/MetArt";
 
 export default function LandingPage() {
   const [expandedPart, setExpandedPart] = useState(null);
@@ -101,6 +102,7 @@ export default function LandingPage() {
           </FadeIn>
           <FadeIn delay={0.35}>
             <p style={prose}>Instead of tests to pass, participants engage in Lectio Divina, examinations of conscience, scenario-based discernment, and private journaling. The goal is not a checkbox — it is a conversion of heart.</p>
+            <MetArt mapKey="landing_hero" size="large" />
           </FadeIn>
           <FadeIn delay={0.45}>
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))", gap: 24, marginTop: 48 }}>
@@ -241,7 +243,8 @@ export default function LandingPage() {
         <div style={sectionStyle}>
           <FadeIn>
             <p style={{ color: red, fontSize: 12, letterSpacing: 3, textAlign: "center", fontWeight: 700, marginBottom: 8 }}>BUILT ON</p>
-            <h2 style={{ ...heading, fontSize: "clamp(24px, 5vw, 30px)", textAlign: "center", marginBottom: 48 }}>Three Pillars of Truth</h2>
+            <h2 style={{ ...heading, fontSize: "clamp(24px, 5vw, 30px)", textAlign: "center", marginBottom: 16 }}>Three Pillars of Truth</h2>
+            <MetArt mapKey="landing_pillars" size="medium" />
           </FadeIn>
           {[
             { title: "The Theology of the Body", author: "St. John Paul II, 1979–1984", desc: "129 catechetical addresses revealing that the human body is not merely biological — it is a revelation of the person, made for self-giving love." },
