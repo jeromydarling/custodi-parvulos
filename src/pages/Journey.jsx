@@ -7,7 +7,7 @@ import Divider from "../components/Divider";
 import { font, bg, ink, brown, red, stone, muted, cream, borderC, sectionStyle, prose, heading, textureOverlay, globalCSS } from "../theme";
 import { getCurrentUser, getProgress, completePart, logout } from "../store";
 import { PARTS } from "../custodi-content";
-import MetArt from "../components/MetArt";
+import MetBackground, { MetInline } from "../components/MetArt";
 
 export default function Journey() {
   const nav = useNavigate();
@@ -99,14 +99,15 @@ export default function Journey() {
             </button>
 
             {/* Part header */}
-            <div style={{ textAlign: "center", marginBottom: 32 }}>
-              <active.Icon size={32} color={active.color} strokeWidth={1.3} style={{ display: "block", margin: "0 auto" }} />
-              <p style={{ color: active.color, fontWeight: 700, fontSize: 12, letterSpacing: 2, marginTop: 12 }}>PART {active.num}</p>
-              <h2 style={{ ...heading, fontSize: 30, marginTop: 4 }}>{active.title}</h2>
-              <p style={{ color: red, fontSize: 15, fontStyle: "italic", marginTop: 4 }}>{active.latin}</p>
-              <p style={{ color: stone, fontSize: 16, marginTop: 8 }}>{active.subtitle}</p>
-              <MetArt partId={active.id} size="hero" />
-            </div>
+            <MetBackground partId={active.id} opacity={0.1} style={{ borderRadius: 8, marginBottom: 32 }}>
+              <div style={{ textAlign: "center", padding: "40px 20px" }}>
+                <active.Icon size={32} color={active.color} strokeWidth={1.3} style={{ display: "block", margin: "0 auto" }} />
+                <p style={{ color: active.color, fontWeight: 700, fontSize: 12, letterSpacing: 2, marginTop: 12 }}>PART {active.num}</p>
+                <h2 style={{ ...heading, fontSize: 30, marginTop: 4 }}>{active.title}</h2>
+                <p style={{ color: red, fontSize: 15, fontStyle: "italic", marginTop: 4 }}>{active.latin}</p>
+                <p style={{ color: stone, fontSize: 16, marginTop: 8 }}>{active.subtitle}</p>
+              </div>
+            </MetBackground>
 
             {/* Scripture */}
             <div style={{ background: cream, border: `1px solid ${borderC}`, borderRadius: 8, padding: 24, textAlign: "center", marginBottom: 32 }}>
@@ -154,7 +155,7 @@ export default function Journey() {
                     <p key={i} style={{ ...prose, marginBottom: 16 }}>{para}</p>
                   ))}
 
-                  <MetArt partId={active.id} sectionIndex={sectionIndex} size="medium" />
+                  <MetInline partId={active.id} sectionIndex={sectionIndex} />
 
                   {/* Reflection pause */}
                   {sec.reflectionPause && (
