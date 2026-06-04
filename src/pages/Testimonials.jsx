@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Star, Send, MessageSquare, Church, User, BookOpen } from "lucide-react";
+import { Star, Send, MessageSquare } from "lucide-react";
 import PelicanLogo from "../components/PelicanLogo";
 import FadeIn from "../components/FadeIn";
 import Divider from "../components/Divider";

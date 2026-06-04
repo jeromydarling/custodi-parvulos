@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useSearchParams } from "react-router-dom";
-import { Printer, Download } from "lucide-react";
+import { Printer } from "lucide-react";
 import PelicanLogo from "../components/PelicanLogo";
 import { font, bg, ink, brown, red, stone, muted, cream, borderC, globalCSS } from "../theme";
 import { issueCertificate, findCertificate, getCurrentUser, getProgress } from "../store";

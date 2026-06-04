@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { BookOpen, FileText, CheckSquare, DollarSign, Mail, Users, Download, ExternalLink, Printer, Church } from "lucide-react";
+import { BookOpen, CheckSquare, ExternalLink, Printer, Church } from "lucide-react";
 import PelicanLogo from "../components/PelicanLogo";
 import FadeIn from "../components/FadeIn";
 import Divider from "../components/Divider";

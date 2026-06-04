@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Download, Mail, ExternalLink, FileText, Image as ImageIcon } from "lucide-react";
+import { Mail } from "lucide-react";
 import PelicanLogo from "../components/PelicanLogo";
 import FadeIn from "../components/FadeIn";
 import Divider from "../components/Divider";

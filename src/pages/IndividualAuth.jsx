@@ -19,23 +19,20 @@ export default function IndividualAuth() {
   const handleRegister = async (e) => {
     e.preventDefault(); setError("");
     if (form.password !== form.confirm) { setError("Passwords do not match"); return; }
-    const p = await registerIndividual(form);
-    if (!p) { setError("An account with this email already exists"); return; }
+    try { await registerIndividual(form); } catch(e) { setError(e.message || "An account with this email already exists"); return; }
     addNewsletterSubscriber(form.email, form.name, "online");
     nav("/journey");
   };
 
   const handleLogin = async (e) => {
     e.preventDefault(); setError("");
-    const p = await loginIndividual(form.email, form.password);
-    if (!p) { setError("Invalid email or password"); return; }
+    try { await loginIndividual(form.email, form.password); } catch(e) { setError(e.message || "Invalid email or password"); return; }
     nav("/journey");
   };
 
   const handleParishLogin = async (e) => {
     e.preventDefault(); setError("");
-    const p = await loginParishioner(form.parishCode, form.email);
-    if (!p) { setError("No matching record found. Check with your parish administrator."); return; }
+    try { await loginParishioner(form.parishCode, form.email); } catch(e) { setError(e.message || "No matching record found. Check with your parish administrator."); return; }
     nav("/journey");
   };
 

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Clock, MapPin, UtensilsCrossed, Music, Cross, Church, Sun, Heart, Users, Mail, Phone, ArrowLeft, HandHeart, BookOpen, Flame, Calendar } from "lucide-react";
+import { Clock, MapPin, UtensilsCrossed, Music, Cross, Church, Sun, Heart, Users, Phone, BookOpen, Flame } from "lucide-react";
 import PelicanLogo from "../components/PelicanLogo";
 import FadeIn from "../components/FadeIn";
 import Divider from "../components/Divider";

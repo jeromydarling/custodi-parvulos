@@ -1,10 +1,10 @@
 import { useState, useEffect, useCallback } from "react";
 import { Link } from "react-router-dom";
-import { Users, DollarSign, Calendar, Trash2, Plus, ChevronRight, Church, BookOpen, Heart, Award, UserPlus, Clock, TrendingUp, Send } from "lucide-react";
+import { Users, DollarSign, Calendar, Trash2, Plus, Church, BookOpen, Heart, Award, UserPlus, Clock, TrendingUp, Send } from "lucide-react";
 import PelicanLogo from "../components/PelicanLogo";
 import FadeIn from "../components/FadeIn";
 import Divider from "../components/Divider";
-import { font, bg, ink, brown, red, stone, muted, cream, borderC, sectionStyle, prose, heading, textureOverlay, globalCSS } from "../theme";
+import { font, bg, ink, brown, stone, muted, cream, borderC, prose, heading, textureOverlay, globalCSS } from "../theme";
 import { getRetreatRequests, updateRetreatStatus, bishops, benefactors, dioceses, referrals, facilitators, caseStudies, prayerIntentions, massIntentions, waitlist, getAdminUser } from "../store";
 
 const inputStyle = { width: "100%", background: cream, border: `1px solid ${borderC}`, borderRadius: 6, padding: "10px 14px", fontFamily: font, fontSize: 14, color: ink, outline: "none", boxSizing: "border-box" };

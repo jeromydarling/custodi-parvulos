@@ -1,11 +1,11 @@
 import { useState, useEffect, useCallback } from "react";
 import { Link } from "react-router-dom";
-import { Mail, Send, Clock, CheckCircle, Users, Bell, FileText, Trash2, Plus, LogOut, Calendar, ChevronDown } from "lucide-react";
+import { Mail, Send, Clock, CheckCircle, Users, Bell, FileText, Trash2, Plus, LogOut, Calendar } from "lucide-react";
 import PelicanLogo from "../components/PelicanLogo";
 import FadeIn from "../components/FadeIn";
 import Divider from "../components/Divider";
 import { font, bg, ink, brown, red, stone, muted, cream, borderC, sectionStyle, prose, heading, textureOverlay, globalCSS } from "../theme";
-import { getRetreatRequests, getScheduledEmails, getSentEmails, markEmailSent, getNewsletterSubscribers, addNewsletterSubscriber, removeNewsletterSubscriber, saveNewsletter, getNewsletters, getAdminUser, setAdminUser, clearAdminUser } from "../store";
+import { getScheduledEmails, markEmailSent, getNewsletterSubscribers, addNewsletterSubscriber, removeNewsletterSubscriber, saveNewsletter, getNewsletters, getAdminUser, setAdminUser, clearAdminUser } from "../store";
 import { REMINDER_7_DAY, REMINDER_3_DAY, REMINDER_1_DAY, FOLLOWUP_PARTICIPANT, FOLLOWUP_PARISH } from "../email-templates";
 
 const inputStyle = { width: "100%", background: cream, border: `1px solid ${borderC}`, borderRadius: 6, padding: "12px 16px", fontFamily: font, fontSize: 16, color: ink, outline: "none", boxSizing: "border-box" };

@@ -1,12 +1,12 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Users, UserPlus, CheckCircle, Clock, Trash2, LogOut, ChevronDown, Download, Award } from "lucide-react";
+import { Users, UserPlus, CheckCircle, Clock, Trash2, LogOut, Download, Award } from "lucide-react";
 import PelicanLogo from "../components/PelicanLogo";
 import FadeIn from "../components/FadeIn";
 import Divider from "../components/Divider";
-import { font, bg, ink, brown, red, stone, muted, cream, borderC, sectionStyle, prose, heading, textureOverlay, globalCSS } from "../theme";
+import { font, bg, ink, brown, red, stone, muted, cream, borderC, sectionStyle, heading, textureOverlay, globalCSS } from "../theme";
 import Nav from "../components/Nav";
-import { getCurrentUser, getParish, addParishioner, removeParishioner, logout, registerParish, loginParishAdmin, issueCertificate } from "../store";
+import { getCurrentUser, getParish, addParishioner, removeParishioner, logout, registerParish, loginParishAdmin } from "../store";
 
 const inputStyle = { width: "100%", background: cream, border: `1px solid ${borderC}`, borderRadius: 6, padding: "12px 16px", fontFamily: font, fontSize: 16, color: ink, outline: "none", boxSizing: "border-box" };
 const btnStyle = { background: brown, color: cream, border: "none", padding: "12px 32px", borderRadius: 6, fontFamily: font, fontSize: 15, fontWeight: 600, cursor: "pointer" };
@@ -36,15 +36,13 @@ export default function ParishAdmin() {
   const handleRegister = async (e) => {
     e.preventDefault(); setError("");
     if (form.password !== form.confirm) { setError("Passwords do not match"); return; }
-    const p = await registerParish(form);
-    if (!p) { setError("Registration failed"); return; }
+    try { await registerParish(form); } catch(e) { setError(e.message || "Registration failed"); return; }
     setUser(getCurrentUser()); setView("dashboard"); refresh();
   };
 
   const handleLogin = async (e) => {
     e.preventDefault(); setError("");
-    const p = await loginParishAdmin(form.email, form.password);
-    if (!p) { setError("Invalid email or password"); return; }
+    try { await loginParishAdmin(form.email, form.password); } catch(e) { setError(e.message || "Invalid email or password"); return; }
     setUser(getCurrentUser()); setView("dashboard"); refresh();
   };
 

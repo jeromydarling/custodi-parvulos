@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { Link } from "react-router-dom";
-import { Plane, Car, Home as HomeIcon, DollarSign, MapPin, Plus, Trash2, Calendar, Fuel, Hotel, LogOut, Download } from "lucide-react";
+import { Plane, Car, HomeIcon, DollarSign, Plus, Trash2, Fuel, Download } from "lucide-react";
 import PelicanLogo from "../components/PelicanLogo";
 import FadeIn from "../components/FadeIn";
 import Divider from "../components/Divider";

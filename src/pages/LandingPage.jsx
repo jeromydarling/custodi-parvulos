@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
-import { Sparkles, Diamond, Hexagon, Cross, Church, Sun, Circle, Leaf, Star, Bird, Crown, Flame, ArrowDown, BookOpen, Heart, Shield, Users, ChevronDown, Music, HandHeart, UtensilsCrossed } from "lucide-react";
+import { Sparkles, Diamond, Hexagon, Cross, Church, Sun, Circle, Leaf, Star, Bird, Crown, Flame, ArrowDown, BookOpen, Heart, Shield, Users, ChevronDown, HandHeart, UtensilsCrossed } from "lucide-react";
 import PelicanLogo from "../components/PelicanLogo";
 import FadeIn from "../components/FadeIn";
 import Divider from "../components/Divider";
