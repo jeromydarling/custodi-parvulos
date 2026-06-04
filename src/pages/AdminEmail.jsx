@@ -27,11 +27,12 @@ export default function AdminEmail() {
   const [previewEmail, setPreviewEmail] = useState(null);
   const [composeSent, setComposeSent] = useState(false);
 
-  const refresh = useCallback(() => {
-    setScheduled(getScheduledEmails().filter(e => !e.sent).sort((a, b) => new Date(a.sendDate) - new Date(b.sendDate)));
-    setSent(getSentEmails().sort((a, b) => new Date(b.sentAt) - new Date(a.sentAt)));
-    setSubscribers(getNewsletterSubscribers());
-    setNewsletters(getNewsletters().sort((a, b) => new Date(b.sentAt) - new Date(a.sentAt)));
+  const refresh = useCallback(async () => {
+    const emails = await getScheduledEmails() || [];
+    setScheduled(emails.filter(e => !e.sent).sort((a, b) => new Date(a.send_date) - new Date(b.send_date)));
+    setSent(emails.filter(e => e.sent).sort((a, b) => new Date(b.sent_at) - new Date(a.sent_at)));
+    setSubscribers(await getNewsletterSubscribers() || []);
+    setNewsletters((await getNewsletters() || []).sort((a, b) => new Date(b.sent_at) - new Date(a.sent_at)));
   }, []);
 
   useEffect(refresh, [refresh]);
@@ -46,21 +47,21 @@ export default function AdminEmail() {
 
   const handleLogout = () => { clearAdminUser(); setAdmin(null); };
 
-  const handleSendEmail = (emailId) => {
-    markEmailSent(emailId);
+  const handleSendEmail = async (emailId) => {
+    await markEmailSent(emailId);
     refresh();
   };
 
-  const handleAddSubscriber = (e) => {
+  const handleAddSubscriber = async (e) => {
     e.preventDefault();
-    if (addSub.email) { addNewsletterSubscriber(addSub.email, addSub.name, "manual"); setAddSub({ email: "", name: "" }); refresh(); }
+    if (addSub.email) { await addNewsletterSubscriber(addSub.email, addSub.name, "manual"); setAddSub({ email: "", name: "" }); refresh(); }
   };
 
-  const handleRemoveSubscriber = (email) => { removeNewsletterSubscriber(email); refresh(); };
+  const handleRemoveSubscriber = async (email) => { await removeNewsletterSubscriber(email); refresh(); };
 
-  const handleSendNewsletter = () => {
+  const handleSendNewsletter = async () => {
     const recipients = compose.audience === "all" ? subscribers : subscribers.filter(s => s.source === compose.audience);
-    saveNewsletter({ ...compose, recipientCount: recipients.length, recipients: recipients.map(r => r.email) });
+    await saveNewsletter({ ...compose, recipient_count: recipients.length });
     setComposeSent(true);
     refresh();
   };

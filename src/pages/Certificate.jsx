@@ -11,28 +11,30 @@ export default function Certificate() {
   const [manual, setManual] = useState({ name: "", parish: "" });
 
   useEffect(() => {
-    const user = getCurrentUser();
-    const progress = getProgress();
-    const allDone = Object.keys(progress).length >= 5;
-    if (user && allDone) {
-      const parishName = user.parishId ? "Custodi Parvulos Online" : "Individual Formation";
-      let existing = findCertificate(user.name, parishName);
-      if (!existing) existing = issueCertificate(user.name, parishName);
-      setCert(existing);
-    } else if (params.get("name") && params.get("parish")) {
-      setCert({
-        participantName: params.get("name"),
-        parishName: params.get("parish"),
-        issueDate: new Date().toISOString(),
-        serialNumber: "CP-DEMO",
-      });
-    }
+    (async () => {
+      const user = getCurrentUser();
+      const progress = await getProgress();
+      const allDone = Object.keys(progress || {}).length >= 5;
+      if (user && allDone) {
+        const parishName = user.parishId ? "Custodi Parvulos Online" : "Individual Formation";
+        let existing = await findCertificate(user.name, parishName);
+        if (!existing) existing = await issueCertificate(user.name, parishName);
+        setCert(existing);
+      } else if (params.get("name") && params.get("parish")) {
+        setCert({
+          participantName: params.get("name"),
+          parishName: params.get("parish"),
+          issueDate: new Date().toISOString(),
+          serialNumber: "CP-DEMO",
+        });
+      }
+    })();
   }, [params]);
 
-  const issueManual = () => {
+  const issueManual = async () => {
     if (!manual.name || !manual.parish) return;
-    const c = issueCertificate(manual.name, manual.parish);
-    setCert(c);
+    const c = await issueCertificate(manual.name, manual.parish);
+    if (c) setCert(c);
   };
 
   const print = () => window.print();

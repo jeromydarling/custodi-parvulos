@@ -45,10 +45,10 @@ export default function TravelTracker() {
   const [estimating, setEstimating] = useState(false);
   const admin = getAdminUser();
 
-  const refresh = useCallback(() => {
-    setTripList(trips.getAll().sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0)));
-    setExpenseList(expenses.getAll().sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0)));
-    setHomeList(hostHomes.getAll());
+  const refresh = useCallback(async () => {
+    setTripList((await trips.getAll()).sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0)));
+    setExpenseList((await expenses.getAll()).sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0)));
+    setHomeList(await hostHomes.getAll());
   }, []);
 
   useEffect(refresh, [refresh]);
@@ -61,25 +61,25 @@ export default function TravelTracker() {
     setEstimating(false);
   };
 
-  const addTrip = (e) => {
+  const addTrip = async (e) => {
     e.preventDefault();
     const miles = parseFloat(tripForm.miles) || 0;
-    const mileageValue = tripForm.mode === "drive" ? miles * IRS_MILEAGE_RATE : 0;
-    trips.add({ ...tripForm, miles, mileageValue });
+    const mileage_value = tripForm.mode === "drive" ? miles * IRS_MILEAGE_RATE : 0;
+    await trips.add({ ...tripForm, miles, mileage_value });
     setTripForm({ mode: "drive", origin: "", destination: "", parish: "", date: "", miles: "", notes: "" });
     refresh();
   };
 
-  const addExpense = (e) => {
+  const addExpense = async (e) => {
     e.preventDefault();
-    expenses.add({ ...expForm, amount: parseFloat(expForm.amount) || 0 });
+    await expenses.add({ ...expForm, amount: parseFloat(expForm.amount) || 0 });
     setExpForm({ category: "fuel", amount: "", description: "", date: "", tripId: "" });
     refresh();
   };
 
-  const addHome = (e) => {
+  const addHome = async (e) => {
     e.preventDefault();
-    hostHomes.add(homeForm);
+    await hostHomes.add(homeForm);
     setHomeForm({ hostName: "", parish: "", city: "", state: "", contact: "", capacity: "1", notes: "" });
     refresh();
   };

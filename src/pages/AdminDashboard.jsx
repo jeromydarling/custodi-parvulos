@@ -61,17 +61,17 @@ export default function AdminDashboard() {
   const [massList, setMassList] = useState([]);
   const [caseList, setCaseList] = useState([]);
 
-  const refresh = useCallback(() => {
-    setRequests(getRetreatRequests());
-    setBishopList(bishops.getAll());
-    setBenefactorList(benefactors.getAll());
-    setDioceseList(dioceses.getAll());
-    setReferralList(referrals.getAll());
-    setFacilitatorList(facilitators.getAll());
-    setWaitlistList(waitlist.getAll());
-    setPrayerList(prayerIntentions.getAll());
-    setMassList(massIntentions.getAll());
-    setCaseList(caseStudies.getAll());
+  const refresh = useCallback(async () => {
+    setRequests(await getRetreatRequests() || []);
+    setBishopList(await bishops.getAll());
+    setBenefactorList(await benefactors.getAll());
+    setDioceseList(await dioceses.getAll());
+    setReferralList(await referrals.getAll());
+    setFacilitatorList(await facilitators.getAll());
+    setWaitlistList(await waitlist.getAll());
+    setPrayerList(await prayerIntentions.getAll());
+    setMassList(await massIntentions.getAll());
+    setCaseList(await caseStudies.getAll());
   }, []);
 
   useEffect(refresh, [refresh]);

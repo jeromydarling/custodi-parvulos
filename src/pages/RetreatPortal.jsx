@@ -334,7 +334,7 @@ export default function RetreatPortal() {
                   </div>
                   <div style={{ display: "flex", justifyContent: "space-between" }}>
                     <button onClick={() => setStep(3)} style={{ background: "none", border: `1px solid ${borderC}`, padding: "14px 28px", borderRadius: 6, fontFamily: font, fontSize: 15, color: stone, cursor: "pointer" }}>← Back</button>
-                    <button onClick={() => { saveRetreatRequest(form); addNewsletterSubscriber(form.email, form.contact, "retreat"); setSubmitted(true); }} style={{ background: brown, color: cream, border: "none", padding: "16px 48px", borderRadius: 6, fontFamily: font, fontSize: 17, fontWeight: 600, letterSpacing: 1, cursor: "pointer" }}>Submit Request</button>
+                    <button onClick={async () => { await saveRetreatRequest(form); await addNewsletterSubscriber(form.email, form.contact, "retreat"); setSubmitted(true); }} style={{ background: brown, color: cream, border: "none", padding: "16px 48px", borderRadius: 6, fontFamily: font, fontSize: 17, fontWeight: 600, letterSpacing: 1, cursor: "pointer" }}>Submit Request</button>
                   </div>
                 </div>
               )}

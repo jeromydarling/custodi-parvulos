@@ -13,17 +13,18 @@ import MetBackground, { MetInline } from "../components/MetArt";
 export default function Journey() {
   const nav = useNavigate();
   const [user, setUser] = useState(getCurrentUser());
-  const [progress, setProgress] = useState(getProgress());
+  const [progress, setProgress] = useState({});
   const [activePart, setActivePart] = useState(null);
   const [confirmed, setConfirmed] = useState(false);
   const [sectionIndex, setSectionIndex] = useState(0);
 
   useEffect(() => { if (!user) nav("/start"); }, [user, nav]);
   useEffect(() => { setSectionIndex(0); setConfirmed(false); }, [activePart]);
+  useEffect(() => { if (user) getProgress().then(p => setProgress(p || {})); }, [user]);
 
   const done = Object.keys(progress).length;
   const allDone = done >= 5;
-  const handleComplete = (partId) => { completePart(partId); setProgress(getProgress()); setActivePart(null); };
+  const handleComplete = async (partId) => { await completePart(partId); const p = await getProgress(); setProgress(p || {}); setActivePart(null); };
   const handleLogout = () => { logout(); nav("/"); };
 
   if (!user) return null;

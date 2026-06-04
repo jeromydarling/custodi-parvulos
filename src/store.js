@@ -1,319 +1,208 @@
-// Local storage-backed data layer (replaced by Supabase in production)
-const KEY = "custodi_data";
+// Hybrid data layer: API-first, localStorage fallback for offline/dev
+const API = "/api";
+const USER_KEY = "custodi_user";
 
-function load() {
-  try { return JSON.parse(localStorage.getItem(KEY)) || defaultData(); }
-  catch { return defaultData(); }
+async function post(path, body) {
+  try {
+    const r = await fetch(`${API}${path}`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
+    if (!r.ok) return null;
+    return await r.json();
+  } catch { return null; }
 }
 
-function defaultData() {
-  return {
-    parishes: [], individuals: [], currentUser: null, retreatRequests: [],
-    scheduledEmails: [], sentEmails: [], newsletterSubscribers: [], newsletters: [],
-    adminUser: null,
-    trips: [], expenses: [], hostHomes: [],
-    bishops: [], benefactors: [], dioceses: [], referrals: [], facilitators: [],
-    caseStudies: [], prayerIntentions: [], massIntentions: [], waitlist: [],
-    certificates: [],
-  };
+async function get(path) {
+  try {
+    const r = await fetch(`${API}${path}`);
+    if (!r.ok) return null;
+    return await r.json();
+  } catch { return null; }
 }
 
-function save(data) {
-  localStorage.setItem(KEY, JSON.stringify(data));
+async function del(path) {
+  try {
+    await fetch(`${API}${path}`, { method: "DELETE" });
+  } catch {}
 }
 
-export function getData() { return load(); }
+async function put(path, body) {
+  try {
+    const r = await fetch(`${API}${path}`, { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
+    if (!r.ok) return null;
+    return await r.json();
+  } catch { return null; }
+}
 
+// ── Current user (always localStorage — it's session state) ──
 export function setCurrentUser(user) {
-  const d = load(); d.currentUser = user; save(d);
+  localStorage.setItem(USER_KEY, JSON.stringify(user));
 }
 
-export function getCurrentUser() { return load().currentUser; }
+export function getCurrentUser() {
+  try { return JSON.parse(localStorage.getItem(USER_KEY)); } catch { return null; }
+}
 
 export function logout() {
-  const d = load(); d.currentUser = null; save(d);
+  localStorage.removeItem(USER_KEY);
 }
 
-// Parish registration
-export function registerParish({ name, diocese, city, state, adminName, adminEmail, adminPassword }) {
-  const d = load();
-  const id = "p_" + Date.now();
-  const parish = { id, name, diocese, city, state, adminName, adminEmail, adminPassword, parishioners: [], createdAt: new Date().toISOString() };
-  d.parishes.push(parish);
-  d.currentUser = { type: "parish_admin", parishId: id, name: adminName, email: adminEmail };
-  save(d);
-  return parish;
+// ── Auth ──
+export async function registerParish({ name, diocese, city, state, adminName, adminEmail, adminPassword }) {
+  const result = await post("/auth/register-parish", { name, diocese, city, state, adminName, adminEmail, adminPassword });
+  if (result && result.id) {
+    setCurrentUser({ type: "parish_admin", parishId: result.orgId, name: result.name, email: result.email });
+    return result;
+  }
+  return null;
 }
 
-// Parish admin login
-export function loginParishAdmin(email, password) {
-  const d = load();
-  const parish = d.parishes.find(p => p.adminEmail === email && p.adminPassword === password);
-  if (!parish) return null;
-  d.currentUser = { type: "parish_admin", parishId: parish.id, name: parish.adminName, email };
-  save(d);
-  return parish;
+export async function loginParishAdmin(email, password) {
+  const result = await post("/auth/login-parish", { email, password });
+  if (result && result.id) {
+    setCurrentUser({ type: "parish_admin", parishId: result.orgId || result.id, name: result.name, email: result.email, parish: result.parish, diocese: result.diocese, city: result.city, state: result.state });
+    return result;
+  }
+  return null;
 }
 
-// Add parishioner
-export function addParishioner(parishId, { name, email }) {
-  const d = load();
-  const parish = d.parishes.find(p => p.id === parishId);
-  if (!parish) return null;
-  const existing = parish.parishioners.find(p => p.email === email);
-  if (existing) return existing;
-  const person = { id: "f_" + Date.now() + Math.random().toString(36).slice(2, 6), name, email, progress: {}, completedAt: null, registeredAt: new Date().toISOString() };
-  parish.parishioners.push(person);
-  save(d);
-  return person;
+export async function registerIndividual({ name, email, password }) {
+  const result = await post("/auth/register", { name, email, password });
+  if (result && result.id) {
+    setCurrentUser({ type: "individual", id: result.id, name: result.name, email: result.email });
+    return result;
+  }
+  return null;
 }
 
-// Remove parishioner
-export function removeParishioner(parishId, personId) {
-  const d = load();
-  const parish = d.parishes.find(p => p.id === parishId);
-  if (!parish) return;
-  parish.parishioners = parish.parishioners.filter(p => p.id !== personId);
-  save(d);
+export async function loginIndividual(email, password) {
+  const result = await post("/auth/login", { email, password });
+  if (result && result.id) {
+    setCurrentUser({ type: "individual", id: result.id, name: result.name, email: result.email });
+    return result;
+  }
+  return null;
 }
 
-// Get parish by id
-export function getParish(parishId) {
-  return load().parishes.find(p => p.id === parishId) || null;
-}
-
-// Individual registration
-export function registerIndividual({ name, email, password }) {
-  const d = load();
-  const existing = d.individuals.find(i => i.email === email);
-  if (existing) return null;
-  const person = { id: "i_" + Date.now(), name, email, password, progress: {}, completedAt: null, registeredAt: new Date().toISOString() };
-  d.individuals.push(person);
-  d.currentUser = { type: "individual", id: person.id, name, email };
-  save(d);
-  return person;
-}
-
-// Individual login
-export function loginIndividual(email, password) {
-  const d = load();
-  const person = d.individuals.find(i => i.email === email && i.password === password);
+export async function loginParishioner(parishId, email) {
+  // Parishioner login — find by org + email
+  const parishioners = await get(`/parish/${parishId}/parishioners`);
+  if (!parishioners) return null;
+  const person = parishioners.find(p => p.email === email);
   if (!person) return null;
-  d.currentUser = { type: "individual", id: person.id, name: person.name, email };
-  save(d);
+  setCurrentUser({ type: "parishioner", id: person.id, parishId, name: person.name, email });
   return person;
 }
 
-// Mark a part as complete for a user
-export function completePart(partId) {
-  const d = load();
-  const u = d.currentUser;
+// ── Parish management ──
+export async function getParish(parishId) {
+  const org = await get(`/organizations/${parishId}`);
+  if (!org) return null;
+  const parishioners = await get(`/parish/${parishId}/parishioners`) || [];
+  return { ...org, parishioners };
+}
+
+export async function addParishioner(parishId, { name, email }) {
+  return await post(`/parish/${parishId}/parishioners`, { name, email });
+}
+
+export async function removeParishioner(parishId, personId) {
+  await del(`/parish/${parishId}/parishioners/${personId}`);
+}
+
+// ── Progress ──
+export async function completePart(partId) {
+  const u = getCurrentUser();
   if (!u) return;
-  if (u.type === "individual") {
-    const person = d.individuals.find(i => i.id === u.id);
-    if (person) {
-      person.progress[partId] = new Date().toISOString();
-      if (Object.keys(person.progress).length >= 5) person.completedAt = new Date().toISOString();
-    }
-  } else if (u.type === "parishioner") {
-    const parish = d.parishes.find(p => p.id === u.parishId);
-    if (parish) {
-      const person = parish.parishioners.find(p => p.id === u.id);
-      if (person) {
-        person.progress[partId] = new Date().toISOString();
-        if (Object.keys(person.progress).length >= 5) person.completedAt = new Date().toISOString();
-      }
-    }
-  }
-  save(d);
+  await post(`/progress/${u.id}/${partId}`, {});
 }
 
-// Get progress for current user
-export function getProgress() {
-  const d = load();
-  const u = d.currentUser;
+export async function getProgress() {
+  const u = getCurrentUser();
   if (!u) return {};
-  if (u.type === "individual") {
-    const person = d.individuals.find(i => i.id === u.id);
-    return person ? person.progress : {};
-  } else if (u.type === "parishioner") {
-    const parish = d.parishes.find(p => p.id === u.parishId);
-    if (parish) {
-      const person = parish.parishioners.find(p => p.id === u.id);
-      return person ? person.progress : {};
-    }
-  }
-  return {};
+  const result = await get(`/progress/${u.id}`);
+  return result || {};
 }
 
-// Parishioner login (via link from parish admin)
-export function loginParishioner(parishId, email) {
-  const d = load();
-  const parish = d.parishes.find(p => p.id === parishId);
-  if (!parish) return null;
-  const person = parish.parishioners.find(p => p.email === email);
-  if (!person) return null;
-  d.currentUser = { type: "parishioner", id: person.id, parishId, name: person.name, email };
-  save(d);
-  return person;
+// ── Retreat requests ──
+export async function saveRetreatRequest(data) {
+  return await post("/retreat-requests/submit", data);
 }
 
-// ── Retreat requests & email scheduling ──
-
-export function saveRetreatRequest(request) {
-  const d = load();
-  const id = "rr_" + Date.now();
-  const rr = { ...request, id, status: "pending", createdAt: new Date().toISOString() };
-  d.retreatRequests.push(rr);
-  // Auto-schedule reminder emails for each selected date
-  (request.selectedDates || []).forEach(dateStr => {
-    const eventDate = new Date(dateStr);
-    [-7, -3, -1].forEach(offset => {
-      const sendDate = new Date(eventDate);
-      sendDate.setDate(sendDate.getDate() + offset);
-      d.scheduledEmails.push({
-        id: "se_" + Date.now() + Math.random().toString(36).slice(2,6),
-        retreatId: id, type: offset === -7 ? "reminder_7d" : offset === -3 ? "reminder_3d" : "reminder_1d",
-        to: request.email, parish: request.parish, contact: request.contact,
-        eventDate: dateStr, sendDate: sendDate.toISOString(), sent: false,
-      });
-    });
-    // Follow-up emails 1 day after event
-    const followDate = new Date(eventDate);
-    followDate.setDate(followDate.getDate() + 1);
-    d.scheduledEmails.push({
-      id: "se_" + Date.now() + Math.random().toString(36).slice(2,6),
-      retreatId: id, type: "followup_parish",
-      to: request.email, parish: request.parish, contact: request.contact,
-      eventDate: dateStr, sendDate: followDate.toISOString(), sent: false,
-    });
-  });
-  save(d);
-  return rr;
-}
-
-export function getRetreatRequests() { return load().retreatRequests || []; }
-export function getScheduledEmails() { return load().scheduledEmails || []; }
-export function getSentEmails() { return load().sentEmails || []; }
-
-export function markEmailSent(emailId) {
-  const d = load();
-  const email = d.scheduledEmails.find(e => e.id === emailId);
-  if (email) {
-    email.sent = true;
-    email.sentAt = new Date().toISOString();
-    d.sentEmails.push({ ...email });
-  }
-  save(d);
-}
+export function getRetreatRequests() { return get("/retreat_requests"); }
 
 // ── Newsletter ──
-
-export function addNewsletterSubscriber(email, name, source) {
-  const d = load();
-  if (d.newsletterSubscribers.find(s => s.email === email)) return;
-  d.newsletterSubscribers.push({ email, name, source, subscribedAt: new Date().toISOString() });
-  save(d);
+export async function addNewsletterSubscriber(email, name, source) {
+  return await post("/newsletter_subscribers", { email, name, source });
 }
 
-export function getNewsletterSubscribers() { return load().newsletterSubscribers || []; }
+export function getNewsletterSubscribers() { return get("/newsletter_subscribers"); }
 
-export function removeNewsletterSubscriber(email) {
-  const d = load();
-  d.newsletterSubscribers = d.newsletterSubscribers.filter(s => s.email !== email);
-  save(d);
+export async function removeNewsletterSubscriber(email) {
+  const subs = await get("/newsletter_subscribers");
+  if (!subs) return;
+  const sub = subs.find(s => s.email === email);
+  if (sub) await del(`/newsletter_subscribers/${sub.id}`);
 }
 
-export function saveNewsletter(newsletter) {
-  const d = load();
-  const id = "nl_" + Date.now();
-  const nl = { ...newsletter, id, sentAt: new Date().toISOString() };
-  d.newsletters.push(nl);
-  save(d);
-  return nl;
+export async function saveNewsletter(data) {
+  return await post("/newsletters", data);
 }
 
-export function getNewsletters() { return load().newsletters || []; }
+export function getNewsletters() { return get("/newsletters"); }
 
-// ── Admin (Google OAuth) ──
+// ── Email scheduling ──
+export function getScheduledEmails() { return get("/scheduled_emails"); }
+export function getSentEmails() { return get("/scheduled_emails"); } // filter sent on frontend
 
-export function setAdminUser(user) {
-  const d = load();
-  d.adminUser = user;
-  save(d);
+export async function markEmailSent(emailId) {
+  return await put(`/scheduled_emails/${emailId}`, { sent: 1, sent_at: new Date().toISOString() });
 }
 
-export function getAdminUser() { return load().adminUser || null; }
-
-export function clearAdminUser() {
-  const d = load();
-  d.adminUser = null;
-  save(d);
+// ── Certificates ──
+export async function issueCertificate(participantName, parishName, completedAt) {
+  return await post("/certificates", {
+    participant_name: participantName,
+    parish_name: parishName,
+    serial_number: "CP-" + Date.now().toString(36).toUpperCase(),
+    issued_at: completedAt || new Date().toISOString(),
+  });
 }
 
-// ── Generic list CRUD helper ──
-function makeList(key) {
+export async function findCertificate(participantName, parishName) {
+  const certs = await get("/certificates");
+  if (!certs) return null;
+  return certs.find(c => c.participant_name === participantName && c.parish_name === parishName);
+}
+
+// ── Admin user (Google OAuth stub) ──
+export function setAdminUser(user) { localStorage.setItem("custodi_admin", JSON.stringify(user)); }
+export function getAdminUser() { try { return JSON.parse(localStorage.getItem("custodi_admin")); } catch { return null; } }
+export function clearAdminUser() { localStorage.removeItem("custodi_admin"); }
+
+// ── Generic CRUD for admin tables ──
+function makeList(table) {
   return {
-    getAll: () => load()[key] || [],
-    add: (item) => {
-      const d = load();
-      const entry = { id: key + "_" + Date.now() + Math.random().toString(36).slice(2,5), createdAt: new Date().toISOString(), ...item };
-      d[key] = d[key] || [];
-      d[key].push(entry);
-      save(d);
-      return entry;
-    },
-    update: (id, patch) => {
-      const d = load();
-      d[key] = (d[key] || []).map(x => x.id === id ? { ...x, ...patch, updatedAt: new Date().toISOString() } : x);
-      save(d);
-    },
-    remove: (id) => {
-      const d = load();
-      d[key] = (d[key] || []).filter(x => x.id !== id);
-      save(d);
-    },
+    getAll: () => get(`/${table}`).then(r => r || []),
+    add: (item) => post(`/${table}`, item),
+    update: (id, patch) => put(`/${table}/${id}`, patch),
+    remove: (id) => del(`/${table}/${id}`),
   };
 }
 
 export const trips = makeList("trips");
 export const expenses = makeList("expenses");
-export const hostHomes = makeList("hostHomes");
+export const hostHomes = makeList("host_homes");
 export const bishops = makeList("bishops");
 export const benefactors = makeList("benefactors");
 export const dioceses = makeList("dioceses");
 export const referrals = makeList("referrals");
 export const facilitators = makeList("facilitators");
-export const caseStudies = makeList("caseStudies");
-export const prayerIntentions = makeList("prayerIntentions");
-export const massIntentions = makeList("massIntentions");
+export const caseStudies = makeList("case_studies");
+export const prayerIntentions = makeList("prayer_intentions");
+export const massIntentions = makeList("mass_intentions");
 export const waitlist = makeList("waitlist");
 export const certificates = makeList("certificates");
 
-// ── Retreat status pipeline ──
-export function updateRetreatStatus(id, status) {
-  const d = load();
-  const r = (d.retreatRequests || []).find(x => x.id === id);
-  if (r) { r.status = status; r.updatedAt = new Date().toISOString(); save(d); }
-  return r;
-}
-
-// ── Certificate issuance ──
-export function issueCertificate(participantName, parishName, completedAt) {
-  const d = load();
-  const cert = {
-    id: "cert_" + Date.now() + Math.random().toString(36).slice(2,5),
-    participantName, parishName, completedAt: completedAt || new Date().toISOString(),
-    issueDate: new Date().toISOString(),
-    serialNumber: "CP-" + Date.now().toString(36).toUpperCase(),
-  };
-  d.certificates = d.certificates || [];
-  d.certificates.push(cert);
-  save(d);
-  return cert;
-}
-
-export function findCertificate(participantName, parishName) {
-  const d = load();
-  return (d.certificates || []).find(c => c.participantName === participantName && c.parishName === parishName);
+// ── Retreat status update ──
+export async function updateRetreatStatus(id, status) {
+  return await put(`/retreat_requests/${id}`, { status, updated_at: new Date().toISOString() });
 }

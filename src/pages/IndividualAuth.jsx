@@ -16,25 +16,25 @@ export default function IndividualAuth() {
   const [error, setError] = useState("");
   const set = (k) => (e) => setForm({ ...form, [k]: e.target.value });
 
-  const handleRegister = (e) => {
+  const handleRegister = async (e) => {
     e.preventDefault(); setError("");
     if (form.password !== form.confirm) { setError("Passwords do not match"); return; }
-    const p = registerIndividual(form);
+    const p = await registerIndividual(form);
     if (!p) { setError("An account with this email already exists"); return; }
     addNewsletterSubscriber(form.email, form.name, "online");
     nav("/journey");
   };
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault(); setError("");
-    const p = loginIndividual(form.email, form.password);
+    const p = await loginIndividual(form.email, form.password);
     if (!p) { setError("Invalid email or password"); return; }
     nav("/journey");
   };
 
-  const handleParishLogin = (e) => {
+  const handleParishLogin = async (e) => {
     e.preventDefault(); setError("");
-    const p = loginParishioner(form.parishCode, form.email);
+    const p = await loginParishioner(form.parishCode, form.email);
     if (!p) { setError("No matching record found. Check with your parish administrator."); return; }
     nav("/journey");
   };

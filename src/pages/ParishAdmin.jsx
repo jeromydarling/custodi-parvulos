@@ -26,37 +26,37 @@ export default function ParishAdmin() {
 
   useEffect(() => {
     if (user?.type === "parish_admin") {
-      setParish(getParish(user.parishId));
+      getParish(user.parishId).then(p => { if (p) setParish(p); });
       setView("dashboard");
     }
   }, [user]);
 
-  const refresh = () => setParish(getParish(user.parishId));
+  const refresh = () => getParish(user.parishId).then(p => { if (p) setParish(p); });
 
-  const handleRegister = (e) => {
+  const handleRegister = async (e) => {
     e.preventDefault(); setError("");
     if (form.password !== form.confirm) { setError("Passwords do not match"); return; }
-    const p = registerParish(form);
+    const p = await registerParish(form);
     if (!p) { setError("Registration failed"); return; }
-    setUser(getCurrentUser()); setParish(p); setView("dashboard");
+    setUser(getCurrentUser()); setView("dashboard"); refresh();
   };
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault(); setError("");
-    const p = loginParishAdmin(form.email, form.password);
+    const p = await loginParishAdmin(form.email, form.password);
     if (!p) { setError("Invalid email or password"); return; }
-    setUser(getCurrentUser()); setParish(p); setView("dashboard");
+    setUser(getCurrentUser()); setView("dashboard"); refresh();
   };
 
-  const handleAdd = (e) => {
+  const handleAdd = async (e) => {
     e.preventDefault();
     if (!addForm.name || !addForm.email) return;
-    addParishioner(user.parishId, addForm);
+    await addParishioner(user.parishId, addForm);
     setAddForm({ name: "", email: "" });
     refresh();
   };
 
-  const handleRemove = (id) => { removeParishioner(user.parishId, id); refresh(); };
+  const handleRemove = async (id) => { await removeParishioner(user.parishId, id); refresh(); };
 
   const handleLogout = () => { logout(); setUser(null); setView("auth"); setParish(null); };
 
