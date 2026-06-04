@@ -7,9 +7,9 @@ assets = { directory = "./dist" }
 [[d1_databases]]
 binding = "DB"
 database_name = "custodi-parvulos-db"
-database_id = "" # Auto-filled by CI
+database_id = "DB_ID_PLACEHOLDER"
 migrations_dir = "api/migrations"
 
 [[kv_namespaces]]
 binding = "SESSIONS"
-id = "" # Auto-filled by CI
+id = "KV_ID_PLACEHOLDER"
