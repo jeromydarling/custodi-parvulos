@@ -24,35 +24,34 @@ async function verifyPassword(pw, stored) {
   return result === stored;
 }
 
-// ── FIX #2: Auth middleware ──
-const SESSION_KEY = "custodi_session";
+// ── Auth middleware (KV-backed sessions) ──
+const SESSION_TTL = 60 * 60 * 24 * 7; // 7 days
 
-function getSession(c) {
+function getSessionId(c) {
   const cookie = c.req.header("Cookie") || "";
   const match = cookie.match(/custodi_sid=([^;]+)/);
   return match ? match[1] : null;
 }
 
-const sessions = new Map();
-
-function createSession(userId, role) {
+async function createSession(kv, userId, role) {
   const sid = crypto.randomUUID();
-  sessions.set(sid, { userId, role, created: Date.now() });
+  await kv.put(`session:${sid}`, JSON.stringify({ userId, role, created: Date.now() }), { expirationTtl: SESSION_TTL });
   return sid;
 }
 
-function requireAuth(c, requiredRole) {
-  const sid = getSession(c);
+async function requireAuth(c, requiredRole) {
+  const sid = getSessionId(c);
   if (!sid) return null;
-  const session = sessions.get(sid);
-  if (!session) return null;
+  const raw = await c.env.SESSIONS.get(`session:${sid}`);
+  if (!raw) return null;
+  const session = JSON.parse(raw);
   if (requiredRole && session.role !== requiredRole) return null;
   return session;
 }
 
 function authResponse(c, data, sid) {
   const res = c.json(data, 201);
-  res.headers.set("Set-Cookie", `custodi_sid=${sid}; Path=/; HttpOnly; SameSite=Lax; Max-Age=604800`);
+  res.headers.set("Set-Cookie", `custodi_sid=${sid}; Path=/; HttpOnly; SameSite=Lax; Max-Age=${SESSION_TTL}`);
   return res;
 }
 
@@ -176,7 +175,7 @@ const ADMIN_TABLES = new Set([
 for (const [name, ops] of Object.entries(tables)) {
   // GET list — public for testimonials, auth for admin tables
   app.get(`/api/${name}`, async (c) => {
-    if (ADMIN_TABLES.has(name) && !requireAuth(c)) {
+    if (ADMIN_TABLES.has(name) && !(await requireAuth(c))) {
       return c.json({ error: "Unauthorized" }, 401);
     }
     const result = await ops.list(c.env.DB);
@@ -184,7 +183,7 @@ for (const [name, ops] of Object.entries(tables)) {
   });
 
   app.get(`/api/${name}/:id`, async (c) => {
-    if (ADMIN_TABLES.has(name) && !requireAuth(c)) {
+    if (ADMIN_TABLES.has(name) && !(await requireAuth(c))) {
       return c.json({ error: "Unauthorized" }, 401);
     }
     const row = await ops.get(c.env.DB, c.req.param("id"));
@@ -193,7 +192,7 @@ for (const [name, ops] of Object.entries(tables)) {
 
   // POST — public for testimonials and newsletter_subscribers, auth for rest
   app.post(`/api/${name}`, async (c) => {
-    if (name !== "testimonials" && name !== "newsletter_subscribers" && !requireAuth(c)) {
+    if (name !== "testimonials" && name !== "newsletter_subscribers" && !(await requireAuth(c))) {
       return c.json({ error: "Unauthorized" }, 401);
     }
     const data = await c.req.json();
@@ -202,14 +201,14 @@ for (const [name, ops] of Object.entries(tables)) {
   });
 
   app.put(`/api/${name}/:id`, async (c) => {
-    if (!requireAuth(c)) return c.json({ error: "Unauthorized" }, 401);
+    if (!(await requireAuth(c))) return c.json({ error: "Unauthorized" }, 401);
     const data = await c.req.json();
     const row = await ops.update(c.env.DB, c.req.param("id"), data);
     return c.json(row);
   });
 
   app.delete(`/api/${name}/:id`, async (c) => {
-    if (!requireAuth(c)) return c.json({ error: "Unauthorized" }, 401);
+    if (!(await requireAuth(c))) return c.json({ error: "Unauthorized" }, 401);
     const result = await ops.delete(c.env.DB, c.req.param("id"));
     return c.json(result);
   });
@@ -226,7 +225,7 @@ app.post("/api/auth/register", async (c) => {
   const id = `u_${uid()}`;
   const hash = await hashPassword(password);
   await c.env.DB.prepare("INSERT INTO users (id, name, email, password_hash, role) VALUES (?, ?, ?, ?, 'individual')").bind(id, name, email, hash).run();
-  const sid = createSession(id, "individual");
+  const sid = await createSession(c.env.SESSIONS, id, "individual");
   return authResponse(c, { id, name, email, role: "individual" }, sid);
 });
 
@@ -240,7 +239,7 @@ app.post("/api/auth/login", async (c) => {
   if (!user || !user.password_hash) return c.json({ error: "Invalid credentials" }, 401);
   const valid = await verifyPassword(password, user.password_hash);
   if (!valid) return c.json({ error: "Invalid credentials" }, 401);
-  const sid = createSession(user.id, user.role);
+  const sid = await createSession(c.env.SESSIONS, user.id, user.role);
   return authResponse(c, { id: user.id, name: user.name, email: user.email, role: user.role, org_id: user.org_id }, sid);
 });
 
@@ -255,7 +254,7 @@ app.post("/api/auth/register-parish", async (c) => {
   const hash = await hashPassword(adminPassword);
   await c.env.DB.prepare("INSERT INTO organizations (id, name, diocese, city, state, admin_name, admin_email, admin_password_hash) VALUES (?, ?, ?, ?, ?, ?, ?, ?)").bind(orgId, name, diocese || null, city || null, state || null, adminName, adminEmail, hash).run();
   await c.env.DB.prepare("INSERT INTO users (id, org_id, name, email, password_hash, role) VALUES (?, ?, ?, ?, ?, 'parish_admin')").bind(userId, orgId, adminName, adminEmail, hash).run();
-  const sid = createSession(userId, "parish_admin");
+  const sid = await createSession(c.env.SESSIONS, userId, "parish_admin");
   return authResponse(c, { id: userId, orgId, name: adminName, email: adminEmail, role: "parish_admin" }, sid);
 });
 
@@ -269,13 +268,13 @@ app.post("/api/auth/login-parish", async (c) => {
   if (!org || !org.admin_password_hash) return c.json({ error: "Invalid credentials" }, 401);
   const valid = await verifyPassword(password, org.admin_password_hash);
   if (!valid) return c.json({ error: "Invalid credentials" }, 401);
-  const sid = createSession(org.id, "parish_admin");
+  const sid = await createSession(c.env.SESSIONS, org.id, "parish_admin");
   return authResponse(c, { id: org.id, name: org.admin_name, email: org.admin_email, role: "parish_admin", orgId: org.id, parish: org.name, diocese: org.diocese, city: org.city, state: org.state }, sid);
 });
 
 // ── Auth: Get current session ──
 app.get("/api/auth/me", async (c) => {
-  const session = requireAuth(c);
+  const session = await requireAuth(c);
   if (!session) return c.json({ error: "Not authenticated" }, 401);
   return c.json(session);
 });
@@ -283,7 +282,7 @@ app.get("/api/auth/me", async (c) => {
 // ── Auth: Logout ──
 app.post("/api/auth/logout", async (c) => {
   const sid = getSession(c);
-  if (sid) sessions.delete(sid);
+  if (sid) await c.env.SESSIONS.delete(`session:${sid}`);
   const res = c.json({ ok: true });
   res.headers.set("Set-Cookie", "custodi_sid=; Path=/; Max-Age=0");
   return res;
@@ -291,7 +290,7 @@ app.post("/api/auth/logout", async (c) => {
 
 // ── Parish: Add parishioner (auth required) ──
 app.post("/api/parish/:orgId/parishioners", async (c) => {
-  if (!requireAuth(c)) return c.json({ error: "Unauthorized" }, 401);
+  if (!(await requireAuth(c))) return c.json({ error: "Unauthorized" }, 401);
   const { name, email } = await c.req.json();
   const orgId = c.req.param("orgId");
   const existing = await c.env.DB.prepare("SELECT id FROM users WHERE email = ? AND org_id = ?").bind(email, orgId).first();
@@ -303,7 +302,7 @@ app.post("/api/parish/:orgId/parishioners", async (c) => {
 
 // ── FIX #4: Parish parishioners with JOIN instead of N+1 ──
 app.get("/api/parish/:orgId/parishioners", async (c) => {
-  if (!requireAuth(c)) return c.json({ error: "Unauthorized" }, 401);
+  if (!(await requireAuth(c))) return c.json({ error: "Unauthorized" }, 401);
   const orgId = c.req.param("orgId");
   const users = await c.env.DB.prepare(
     `SELECT u.*, GROUP_CONCAT(p.part_id || '=' || p.completed_at) as progress_str
@@ -327,7 +326,7 @@ app.get("/api/parish/:orgId/parishioners", async (c) => {
 
 // ── Parish: Remove parishioner (auth required) ──
 app.delete("/api/parish/:orgId/parishioners/:userId", async (c) => {
-  if (!requireAuth(c)) return c.json({ error: "Unauthorized" }, 401);
+  if (!(await requireAuth(c))) return c.json({ error: "Unauthorized" }, 401);
   await c.env.DB.prepare("DELETE FROM progress WHERE user_id = ?").bind(c.req.param("userId")).run();
   await c.env.DB.prepare("DELETE FROM users WHERE id = ? AND org_id = ?").bind(c.req.param("userId"), c.req.param("orgId")).run();
   return c.json({ deleted: true });
@@ -384,7 +383,7 @@ app.post("/api/retreat-requests/submit", async (c) => {
 
 // ── FIX #4: StoneBridge export with JOIN instead of N+1 ──
 app.get("/api/parish/:orgId/stonebridge-export", async (c) => {
-  if (!requireAuth(c)) return c.json({ error: "Unauthorized" }, 401);
+  if (!(await requireAuth(c))) return c.json({ error: "Unauthorized" }, 401);
   const orgId = c.req.param("orgId");
   const org = await c.env.DB.prepare("SELECT * FROM organizations WHERE id = ?").bind(orgId).first();
   const users = await c.env.DB.prepare(

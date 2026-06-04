@@ -7,5 +7,9 @@ assets = { directory = "./dist" }
 [[d1_databases]]
 binding = "DB"
 database_name = "custodi-parvulos-db"
-database_id = "" # Fill after: npx wrangler d1 create custodi-parvulos-db
+database_id = "" # Auto-filled by CI
 migrations_dir = "api/migrations"
+
+[[kv_namespaces]]
+binding = "SESSIONS"
+id = "" # Auto-filled by CI
