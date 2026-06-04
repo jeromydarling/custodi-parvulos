@@ -2,9 +2,9 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import PelicanLogo from "../components/PelicanLogo";
 import FadeIn from "../components/FadeIn";
-import { font, bg, ink, brown, red, stone, muted, cream, borderC, sectionStyle, heading, textureOverlay, globalCSS } from "../theme";
+import { font, bg, ink, brown, red, stone, muted, cream, borderC, heading, textureOverlay, globalCSS } from "../theme";
 import Nav from "../components/Nav";
-import { registerIndividual, loginIndividual, loginParishioner, getCurrentUser, addNewsletterSubscriber, setCurrentUser } from "../store";
+import { registerIndividual, loginIndividual, loginParishioner, addNewsletterSubscriber, setCurrentUser } from "../store";
 
 const inputStyle = { width: "100%", background: cream, border: `1px solid ${borderC}`, borderRadius: 6, padding: "12px 16px", fontFamily: font, fontSize: 16, color: ink, outline: "none", boxSizing: "border-box" };
 const btnStyle = { background: brown, color: cream, border: "none", padding: "14px 32px", borderRadius: 6, fontFamily: font, fontSize: 16, fontWeight: 600, cursor: "pointer", width: "100%" };

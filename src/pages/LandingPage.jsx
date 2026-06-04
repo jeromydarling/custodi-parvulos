@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Sparkles, Diamond, Hexagon, Cross, Church, Sun, Circle, Leaf, Star, Bird, Crown, Flame, ArrowDown, BookOpen, Heart, Shield, Users, ChevronDown, HandHeart, UtensilsCrossed } from "lucide-react";
 import PelicanLogo from "../components/PelicanLogo";

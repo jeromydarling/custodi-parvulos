@@ -6,7 +6,7 @@ import FadeIn from "../components/FadeIn";
 import Divider from "../components/Divider";
 import { font, bg, ink, brown, red, stone, muted, cream, borderC, sectionStyle, prose, heading, textureOverlay, globalCSS } from "../theme";
 import { getScheduledEmails, markEmailSent, getNewsletterSubscribers, addNewsletterSubscriber, removeNewsletterSubscriber, saveNewsletter, getNewsletters, getAdminUser, setAdminUser, clearAdminUser } from "../store";
-import { REMINDER_7_DAY, REMINDER_3_DAY, REMINDER_1_DAY, FOLLOWUP_PARTICIPANT, FOLLOWUP_PARISH } from "../email-templates";
+import { REMINDER_7_DAY, REMINDER_3_DAY, REMINDER_1_DAY, FOLLOWUP_PARISH } from "../email-templates";
 
 const inputStyle = { width: "100%", background: cream, border: `1px solid ${borderC}`, borderRadius: 6, padding: "12px 16px", fontFamily: font, fontSize: 16, color: ink, outline: "none", boxSizing: "border-box" };
 const btnStyle = { background: brown, color: cream, border: "none", padding: "10px 24px", borderRadius: 6, fontFamily: font, fontSize: 14, fontWeight: 600, cursor: "pointer" };

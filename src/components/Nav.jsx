@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Menu, X } from "lucide-react";
 import PelicanLogo from "./PelicanLogo";
-import { font, bg, brown, red, stone, borderC, cream } from "../theme";
+import { font, bg, brown, red, stone, borderC } from "../theme";
 
 const LINKS = [
   { to: "/start", label: "Start", color: red, bold: true },

@@ -2,7 +2,19 @@ import { Hono } from "hono";
 import { cors } from "hono/cors";
 
 const app = new Hono();
-app.use("/*", cors());
+
+app.use("/*", cors({
+  origin: (origin) => origin || "*",
+  credentials: true,
+}));
+
+app.use("/*", async (c, next) => {
+  await next();
+  c.res.headers.set("X-Content-Type-Options", "nosniff");
+  c.res.headers.set("X-Frame-Options", "DENY");
+  c.res.headers.set("Referrer-Policy", "strict-origin-when-cross-origin");
+  c.res.headers.set("Permissions-Policy", "camera=(), microphone=(), geolocation=()");
+});
 
 const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
 

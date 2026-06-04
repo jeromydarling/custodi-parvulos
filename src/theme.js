@@ -7,6 +7,14 @@ export const stone = "#8B7355";
 export const muted = "#B8A080";
 export const cream = "#FFFDF7";
 export const borderC = "#E8DCC8";
+export const success = "#4A7C59";
+export const partColors = {
+  creation: "#C9A84C",
+  fall: "#8B4553",
+  formation: "#4A7C59",
+  messiah: "#9B2335",
+  ecclesia: "#2E5E8E",
+};
 
 export const sectionStyle = { maxWidth: 760, margin: "0 auto", padding: "0 24px" };
 export const prose = { fontFamily: font, fontSize: 18, lineHeight: 1.9, color: "#4A3828" };
