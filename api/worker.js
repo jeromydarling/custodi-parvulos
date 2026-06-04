@@ -67,6 +67,7 @@ const tables = {
   scheduled_emails: crud("scheduled_emails", "se"),
   certificates: crud("certificates", "cert"),
   progress: crud("progress", "pg"),
+  mass_intentions: crud("mass_intentions", "mi"),
 };
 
 // ── REST endpoints for each table ──

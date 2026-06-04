@@ -87,12 +87,12 @@ export default function TravelTracker() {
   // Totals
   const totalMiles = tripList.filter(t => t.mode === "drive").reduce((s, t) => s + (t.miles || 0), 0);
   const totalFlown = tripList.filter(t => t.mode === "fly").reduce((s, t) => s + (t.miles || 0), 0);
-  const totalMileageDeduction = tripList.filter(t => t.mode === "drive").reduce((s, t) => s + (t.mileageValue || 0), 0);
+  const totalMileageDeduction = tripList.filter(t => t.mode === "drive").reduce((s, t) => s + (t.mileage_value || 0), 0);
   const totalExpenses = expenseList.reduce((s, e) => s + (e.amount || 0), 0);
 
   const exportCSV = () => {
     const rows = [["Date", "Mode", "Origin", "Destination", "Parish", "Miles", "Mileage Value", "Notes"]];
-    tripList.forEach(t => rows.push([t.date || "", t.mode, t.origin, t.destination, t.parish || "", t.miles || 0, t.mileageValue || 0, t.notes || ""]));
+    tripList.forEach(t => rows.push([t.date || "", t.mode, t.origin, t.destination, t.parish || "", t.miles || 0, t.mileage_value || 0, t.notes || ""]));
     rows.push([]);
     rows.push(["Expenses"]);
     rows.push(["Date", "Category", "Description", "Amount"]);
@@ -207,7 +207,7 @@ export default function TravelTracker() {
                     </div>
                     <div style={{ textAlign: "right" }}>
                       <p style={{ fontSize: 14, fontWeight: 700, color: ink }}>{t.miles?.toLocaleString() || 0} mi</p>
-                      {t.mileageValue > 0 && <p style={{ fontSize: 11, color: "#4A7C59" }}>${t.mileageValue.toFixed(2)} deduction</p>}
+                      {t.mileage_value > 0 && <p style={{ fontSize: 11, color: "#4A7C59" }}>${t.mileage_value.toFixed(2)} deduction</p>}
                       <button onClick={() => { trips.remove(t.id); refresh(); }} style={{ background: "none", border: "none", cursor: "pointer", color: muted, marginTop: 4 }}><Trash2 size={12} /></button>
                     </div>
                   </div>

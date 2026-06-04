@@ -84,7 +84,7 @@ export default function Certificate() {
               <h1 style={{ fontSize: 28, color: brown, letterSpacing: 3, fontWeight: 700, marginBottom: 24 }}>FORMATIONIS</h1>
               <p style={{ fontSize: 14, color: stone, fontStyle: "italic", marginBottom: 16 }}>This testifies that</p>
               <p style={{ fontSize: 36, color: ink, fontWeight: 700, marginBottom: 16, borderBottom: `1px solid #8B7355`, paddingBottom: 12, display: "inline-block", padding: "0 40px 12px" }}>
-                {cert.participantName}
+                {cert.participant_name}
               </p>
               <p style={{ fontSize: 14, color: stone, marginTop: 16, lineHeight: 1.8 }}>
                 has faithfully completed the full formation of<br/>
@@ -93,18 +93,18 @@ export default function Certificate() {
                 rooted in the Theology of the Body, Humanae Vitae,<br/>
                 and the findings of the John Jay College studies
               </p>
-              {cert.parishName && cert.parishName !== "Individual Formation" && (
-                <p style={{ fontSize: 13, color: muted, fontStyle: "italic", marginTop: 16 }}>{cert.parishName}</p>
+              {cert.parish_name && cert.parish_name !== "Individual Formation" && (
+                <p style={{ fontSize: 13, color: muted, fontStyle: "italic", marginTop: 16 }}>{cert.parish_name}</p>
               )}
             </div>
 
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginTop: 32 }}>
               <div style={{ textAlign: "left", fontSize: 11, color: muted }}>
                 <p style={{ borderTop: "1px solid #8B7355", paddingTop: 4, minWidth: 140 }}>Date of Completion</p>
-                <p style={{ marginTop: 4 }}>{new Date(cert.issueDate).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}</p>
+                <p style={{ marginTop: 4 }}>{new Date(cert.issued_at).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}</p>
               </div>
               <div style={{ textAlign: "center", fontSize: 11, color: muted }}>
-                <p style={{ fontStyle: "italic" }}>Serial: {cert.serialNumber}</p>
+                <p style={{ fontStyle: "italic" }}>Serial: {cert.serial_number}</p>
               </div>
               <div style={{ textAlign: "right", fontSize: 11, color: muted }}>
                 <p style={{ borderTop: "1px solid #8B7355", paddingTop: 4, minWidth: 140 }}>Issued by</p>

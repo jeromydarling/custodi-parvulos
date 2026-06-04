@@ -191,7 +191,7 @@ export default function AdminDashboard() {
             <p style={{ ...prose, fontSize: 14, marginBottom: 16 }}>All scheduled retreats in chronological order.</p>
             {(() => {
               const dated = [];
-              requests.forEach(r => (r.selectedDates || []).forEach(d => dated.push({ parish: r.parish, diocese: r.diocese, date: new Date(d), status: r.status })));
+              requests.forEach(r => (JSON.parse(r.selected_dates || "[]") || []).forEach(d => dated.push({ parish: r.parish, diocese: r.diocese, date: new Date(d), status: r.status })));
               dated.sort((a, b) => a.date - b.date);
               if (dated.length === 0) return <p style={{ color: muted, fontStyle: "italic", textAlign: "center" }}>No retreats scheduled</p>;
               return (

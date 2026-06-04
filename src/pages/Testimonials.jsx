@@ -8,18 +8,19 @@ import { font, bg, ink, brown, red, stone, muted, cream, borderC, sectionStyle, 
 import Nav from "../components/Nav";
 
 const inputStyle = { width: "100%", background: cream, border: `1px solid ${borderC}`, borderRadius: 6, padding: "12px 16px", fontFamily: font, fontSize: 16, color: ink, outline: "none", boxSizing: "border-box" };
-const STORAGE_KEY = "custodi_testimonials";
-
-function loadTestimonials() {
-  try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; }
-  catch { return []; }
+async function loadTestimonials() {
+  try {
+    const r = await fetch("/api/testimonials");
+    if (!r.ok) return [];
+    return await r.json();
+  } catch { return []; }
 }
 
-function saveTestimonial(t) {
-  const all = loadTestimonials();
-  all.unshift({ ...t, id: Date.now(), date: new Date().toISOString() });
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(all));
-  return all;
+async function saveTestimonial(t) {
+  try {
+    await fetch("/api/testimonials", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ...t, approved: 1 }) });
+    return await loadTestimonials();
+  } catch { return []; }
 }
 
 function Stars({ count, size = 16, interactive = false, onChange }) {
@@ -71,18 +72,18 @@ export default function Testimonials() {
   const set = (k) => (e) => setForm({ ...form, [k]: e.target.value });
 
   useEffect(() => {
-    const stored = loadTestimonials();
-    if (stored.length === 0) {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(SEED));
-      setTestimonials(SEED);
-    } else {
-      setTestimonials(stored);
-    }
+    loadTestimonials().then(stored => {
+      if (stored.length === 0) {
+        setTestimonials(SEED);
+      } else {
+        setTestimonials(stored);
+      }
+    });
   }, []);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const all = saveTestimonial(form);
+    const all = await saveTestimonial(form);
     setTestimonials(all);
     setSubmitted(true);
   };

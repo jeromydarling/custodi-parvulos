@@ -97,9 +97,11 @@ export default function IndividualAuth() {
           )}
 
           <div style={{ textAlign: "center", marginTop: 32 }}>
-            <button onClick={() => {
-              setCurrentUser({ type: "individual", id: "guest_" + Date.now(), name: "Guest", email: "guest@preview.com" });
-              nav("/journey");
+            <button onClick={async () => {
+              const guestEmail = `guest_${Date.now()}@preview.custodiparvulos.org`;
+              const result = await registerIndividual({ name: "Guest", email: guestEmail, password: "guest" });
+              if (result) nav("/journey");
+              else { setCurrentUser({ type: "individual", id: "guest_" + Date.now(), name: "Guest", email: guestEmail }); nav("/journey"); }
             }} style={{ background: "none", border: `1px solid ${borderC}`, padding: "12px 28px", borderRadius: 6, fontFamily: font, fontSize: 15, color: brown, cursor: "pointer", fontWeight: 600, width: "100%", marginBottom: 16 }}>
               Continue as Guest →
             </button>

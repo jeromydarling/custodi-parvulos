@@ -140,7 +140,7 @@ export default function AdminEmail() {
               <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
                 {scheduled.map(email => {
                   const tmpl = TEMPLATE_MAP[email.type];
-                  const isPast = new Date(email.sendDate) <= new Date();
+                  const isPast = new Date(email.send_date) <= new Date();
                   return (
                     <div key={email.id} style={{ background: cream, border: `1px solid ${isPast ? `${red}40` : borderC}`, borderRadius: 8, padding: "16px 20px" }}>
                       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 8 }}>
@@ -150,7 +150,7 @@ export default function AdminEmail() {
                           <p style={{ fontSize: 13, color: stone }}>To: {email.to}</p>
                           <p style={{ fontSize: 13, color: muted }}>
                             <Calendar size={12} style={{ verticalAlign: "middle", marginRight: 4 }} />
-                            Send: {new Date(email.sendDate).toLocaleDateString()} | Event: {new Date(email.eventDate).toLocaleDateString()}
+                            Send: {new Date(email.send_date).toLocaleDateString()} | Event: {new Date(email.event_date).toLocaleDateString()}
                           </p>
                         </div>
                         <div style={{ display: "flex", gap: 8 }}>
@@ -164,7 +164,7 @@ export default function AdminEmail() {
                         <div style={{ marginTop: 12, borderTop: `1px solid ${borderC}`, paddingTop: 12 }}>
                           <p style={{ fontSize: 13, fontWeight: 700, color: brown }}>Subject: {tmpl.subject}</p>
                           <pre style={{ fontFamily: font, fontSize: 13, color: ink, whiteSpace: "pre-wrap", lineHeight: 1.6, marginTop: 8, background: bg, padding: 12, borderRadius: 6, border: `1px solid ${borderC}` }}>
-                            {tmpl.body(email.parish, new Date(email.eventDate).toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" }), email.contact)}
+                            {tmpl.body(email.parish, new Date(email.event_date).toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" }), email.contact)}
                           </pre>
                         </div>
                       )}
@@ -220,9 +220,9 @@ export default function AdminEmail() {
                   <div key={nl.id} style={{ background: cream, border: `1px solid ${borderC}`, borderRadius: 8, padding: "12px 16px", marginBottom: 8 }}>
                     <div style={{ display: "flex", justifyContent: "space-between" }}>
                       <p style={{ fontWeight: 600, color: ink, fontSize: 15 }}>{nl.subject}</p>
-                      <span style={{ fontSize: 12, color: muted }}>{new Date(nl.sentAt).toLocaleDateString()}</span>
+                      <span style={{ fontSize: 12, color: muted }}>{new Date(nl.sent_at).toLocaleDateString()}</span>
                     </div>
-                    <p style={{ fontSize: 13, color: stone }}>Sent to {nl.recipientCount} subscribers</p>
+                    <p style={{ fontSize: 13, color: stone }}>Sent to {nl.recipient_count} subscribers</p>
                   </div>
                 ))}
               </div>
@@ -269,7 +269,7 @@ export default function AdminEmail() {
             ) : (
               <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
                 {sent.map(email => (
-                  <div key={email.id + email.sentAt} style={{ background: cream, border: `1px solid ${borderC}`, borderRadius: 6, padding: "12px 16px" }}>
+                  <div key={email.id + email.sent_at} style={{ background: cream, border: `1px solid ${borderC}`, borderRadius: 6, padding: "12px 16px" }}>
                     <div style={{ display: "flex", justifyContent: "space-between" }}>
                       <div>
                         <span style={{ fontSize: 12, fontWeight: 700, color: "#4A7C59", letterSpacing: 1 }}>{TYPE_LABELS[email.type] || "Newsletter"}</span>
@@ -278,7 +278,7 @@ export default function AdminEmail() {
                       </div>
                       <div style={{ textAlign: "right" }}>
                         <CheckCircle size={14} color="#4A7C59" />
-                        <p style={{ fontSize: 12, color: muted, marginTop: 4 }}>{new Date(email.sentAt).toLocaleString()}</p>
+                        <p style={{ fontSize: 12, color: muted, marginTop: 4 }}>{new Date(email.sent_at).toLocaleString()}</p>
                       </div>
                     </div>
                   </div>

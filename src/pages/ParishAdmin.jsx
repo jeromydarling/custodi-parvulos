@@ -121,16 +121,7 @@ export default function ParishAdmin() {
                   <p style={{ color: stone, fontSize: 15, marginTop: 4 }}>{parish.diocese} — {parish.city}, {parish.state}</p>
                 </div>
                 <button onClick={() => {
-                  const rows = [["Participant Name","Email","Role","Formation Completed","Completion Date","Parts Completed","Organization","Diocese"]];
-                  parish.parishioners.forEach(p => {
-                    rows.push([p.name, p.email, p.role || "Volunteer", p.completedAt ? "Yes" : "No", p.completedAt ? new Date(p.completedAt).toLocaleDateString() : "", Object.keys(p.progress || {}).length, parish.name, parish.diocese]);
-                  });
-                  const csv = rows.map(r => r.map(c => `"${String(c).replace(/"/g,'""')}"`).join(",")).join("\n");
-                  const blob = new Blob([csv], { type: "text/csv" });
-                  const url = URL.createObjectURL(blob);
-                  const a = document.createElement("a");
-                  a.href = url; a.download = `stonebridge-audit-${parish.name.replace(/\s+/g,"-")}-${new Date().toISOString().slice(0,10)}.csv`;
-                  a.click();
+                  window.open(`/api/parish/${user.parishId}/stonebridge-export`, '_blank');
                 }} style={{ background: "none", border: `1px solid ${brown}`, color: brown, padding: "10px 16px", borderRadius: 6, fontFamily: font, fontSize: 13, fontWeight: 600, cursor: "pointer", display: "flex", alignItems: "center", gap: 6 }}>
                   <Download size={13} /> StoneBridge Audit Export
                 </button>
