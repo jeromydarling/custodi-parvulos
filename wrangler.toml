@@ -1,15 +1,11 @@
-name = "custodi-parvulos-api"
+name = "custodi-parvulos"
 main = "api/worker.js"
 compatibility_date = "2024-12-01"
-
-[vars]
-ENVIRONMENT = "production"
+compatibility_flags = ["nodejs_compat"]
+assets = { directory = "./dist" }
 
 [[d1_databases]]
 binding = "DB"
 database_name = "custodi-parvulos-db"
-database_id = "" # Fill after running: npx wrangler d1 create custodi-parvulos-db
+database_id = "" # Fill after: npx wrangler d1 create custodi-parvulos-db
 migrations_dir = "api/migrations"
-
-[site]
-bucket = "./dist"
