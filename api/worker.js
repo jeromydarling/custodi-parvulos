@@ -413,6 +413,71 @@ app.get("/api/parish/:orgId/stonebridge-export", async (c) => {
   return new Response(csv, { headers: { "Content-Type": "text/csv", "Content-Disposition": `attachment; filename="stonebridge-export.csv"` } });
 });
 
+// ── Translation via Workers AI (Llama) ──
+app.post("/api/translate", async (c) => {
+  const { text, targetLang = "es" } = await c.req.json();
+  if (!text) return c.json({ error: "Missing text" }, 400);
+
+  // Check cache first
+  const cacheKey = `translate:${targetLang}:${text.slice(0, 80)}:${text.length}`;
+  const cached = await c.env.SESSIONS.get(cacheKey);
+  if (cached) return c.json({ translated: cached, cached: true });
+
+  const langNames = { es: "Spanish", pl: "Polish", fr: "French", pt: "Portuguese", it: "Italian", de: "German" };
+  const langName = langNames[targetLang] || "Spanish";
+
+  const result = await c.env.AI.run("@cf/meta/llama-3.1-8b-instruct", {
+    messages: [
+      {
+        role: "system",
+        content: `You are a professional Catholic liturgical translator. Translate the following text to ${langName}. Preserve all theological terminology accurately. Use formal register appropriate for Catholic Church documents. Do not add explanations — return only the translation.`
+      },
+      { role: "user", content: text }
+    ],
+    max_tokens: 2048,
+  });
+
+  const translated = result.response || "";
+
+  // Cache for 30 days
+  await c.env.SESSIONS.put(cacheKey, translated, { expirationTtl: 60 * 60 * 24 * 30 });
+
+  return c.json({ translated });
+});
+
+// Batch translate multiple texts
+app.post("/api/translate/batch", async (c) => {
+  const { texts, targetLang = "es" } = await c.req.json();
+  if (!texts || !Array.isArray(texts)) return c.json({ error: "Missing texts array" }, 400);
+
+  const results = [];
+  for (const text of texts.slice(0, 20)) {
+    const cacheKey = `translate:${targetLang}:${text.slice(0, 80)}:${text.length}`;
+    const cached = await c.env.SESSIONS.get(cacheKey);
+    if (cached) {
+      results.push(cached);
+      continue;
+    }
+
+    const langNames = { es: "Spanish", pl: "Polish", fr: "French", pt: "Portuguese", it: "Italian", de: "German" };
+    const langName = langNames[targetLang] || "Spanish";
+
+    const result = await c.env.AI.run("@cf/meta/llama-3.1-8b-instruct", {
+      messages: [
+        { role: "system", content: `Translate to ${langName}. Catholic liturgical register. Return only the translation.` },
+        { role: "user", content: text }
+      ],
+      max_tokens: 2048,
+    });
+
+    const translated = result.response || text;
+    await c.env.SESSIONS.put(cacheKey, translated, { expirationTtl: 60 * 60 * 24 * 30 });
+    results.push(translated);
+  }
+
+  return c.json({ translations: results });
+});
+
 // ── Serve static assets (SPA fallback) ──
 app.get("*", async (c) => {
   return c.env.ASSETS.fetch(c.req.raw);

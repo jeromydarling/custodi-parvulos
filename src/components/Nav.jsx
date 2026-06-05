@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Menu, X } from "lucide-react";
+import { Menu, X, Globe } from "lucide-react";
 import PelicanLogo from "./PelicanLogo";
 import { font, bg, brown, red, stone, borderC } from "../theme";
+import { useLang } from "../i18n";
 
 const LINKS = [
   { to: "/start", label: "Start", color: red, bold: true },
@@ -12,9 +13,34 @@ const LINKS = [
   { to: "/readings", label: "Readings", color: stone },
 ];
 
+const LANGS = [
+  { code: "en", label: "English" },
+  { code: "es", label: "Español" },
+];
+
 export default function Nav({ extra = [], rightSlot = null }) {
   const [open, setOpen] = useState(false);
+  const [langOpen, setLangOpen] = useState(false);
+  const { lang, setLang } = useLang();
   const allLinks = [...LINKS, ...extra];
+
+  const langToggle = (
+    <div style={{ position: "relative" }}>
+      <button onClick={() => setLangOpen(!langOpen)} style={{ background: "none", border: `1px solid ${borderC}`, borderRadius: 4, padding: "4px 8px", cursor: "pointer", display: "flex", alignItems: "center", gap: 4, fontFamily: font, fontSize: 12, color: stone }}>
+        <Globe size={12} /> {lang.toUpperCase()}
+      </button>
+      {langOpen && (
+        <div style={{ position: "absolute", right: 0, top: "100%", marginTop: 4, background: "#FFFDF7", border: `1px solid ${borderC}`, borderRadius: 6, boxShadow: "0 4px 12px rgba(0,0,0,0.1)", zIndex: 30, overflow: "hidden" }}>
+          {LANGS.map(l => (
+            <button key={l.code} onClick={() => { setLang(l.code); setLangOpen(false); }}
+              style={{ display: "block", width: "100%", padding: "8px 16px", border: "none", background: lang === l.code ? `${brown}12` : "transparent", fontFamily: font, fontSize: 13, color: lang === l.code ? brown : stone, fontWeight: lang === l.code ? 700 : 400, cursor: "pointer", textAlign: "left", whiteSpace: "nowrap" }}>
+              {l.label}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
 
   return (
     <>
@@ -30,6 +56,7 @@ export default function Nav({ extra = [], rightSlot = null }) {
             {allLinks.map(l => (
               <Link key={l.to} to={l.to} style={{ fontFamily: font, color: l.color || stone, textDecoration: "none", fontSize: 13, fontWeight: l.bold ? 600 : 400 }}>{l.label}</Link>
             ))}
+            {langToggle}
             {rightSlot}
           </div>
 
@@ -48,6 +75,14 @@ export default function Nav({ extra = [], rightSlot = null }) {
                 {l.label}
               </Link>
             ))}
+            <div style={{ padding: "10px 8px", borderTop: `1px solid ${borderC}`, marginTop: 4, display: "flex", gap: 8 }}>
+              {LANGS.map(l => (
+                <button key={l.code} onClick={() => { setLang(l.code); setOpen(false); }}
+                  style={{ padding: "6px 14px", border: `1px solid ${l.code === lang ? brown : borderC}`, borderRadius: 4, background: l.code === lang ? `${brown}12` : "transparent", fontFamily: font, fontSize: 13, color: l.code === lang ? brown : stone, fontWeight: l.code === lang ? 700 : 400, cursor: "pointer" }}>
+                  {l.label}
+                </button>
+              ))}
+            </div>
             {rightSlot && <div style={{ padding: "10px 8px", borderTop: `1px solid ${borderC}`, marginTop: 4 }}>{rightSlot}</div>}
           </div>
         )}

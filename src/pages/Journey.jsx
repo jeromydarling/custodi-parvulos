@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { CheckCircle, LogOut, ChevronDown, BookOpen, MessageCircle, Hand } from "lucide-react";
 import PelicanLogo from "../components/PelicanLogo";
 import FadeIn from "../components/FadeIn";
+import { T } from "../i18n";
 import Divider from "../components/Divider";
 import { font, bg, ink, brown, red, stone, muted, cream, borderC, sectionStyle, prose, heading, textureOverlay, globalCSS } from "../theme";
 import Nav from "../components/Nav";
@@ -128,7 +129,7 @@ export default function Journey() {
             {active.introduction && (
               <div style={{ marginBottom: 32 }}>
                 {active.introduction.split("\n\n").map((para, i) => (
-                  <p key={i} style={{ ...prose, marginBottom: 16 }}>{para}</p>
+                  <p key={i} style={{ ...prose, marginBottom: 16 }}><T>{para}</T></p>
                 ))}
               </div>
             )}
@@ -148,9 +149,9 @@ export default function Journey() {
               const sec = active.sections[sectionIndex];
               return (
                 <div>
-                  <h3 style={{ ...heading, fontSize: 22, marginBottom: 16 }}>{sec.title}</h3>
+                  <h3 style={{ ...heading, fontSize: 22, marginBottom: 16 }}><T>{sec.title}</T></h3>
                   {sec.content.split("\n\n").map((para, i) => (
-                    <p key={i} style={{ ...prose, marginBottom: 16 }}>{para}</p>
+                    <p key={i} style={{ ...prose, marginBottom: 16 }}><T>{para}</T></p>
                   ))}
 
                   <MetInline partId={active.id} sectionIndex={sectionIndex} />
@@ -159,9 +160,9 @@ export default function Journey() {
                   {sec.reflectionPause && (
                     <div style={{ background: `${red}06`, border: `1px solid ${red}20`, borderRadius: 8, padding: 20, margin: "24px 0" }}>
                       <p style={{ color: red, fontSize: 12, fontWeight: 700, letterSpacing: 1, marginBottom: 8, display: "flex", alignItems: "center", gap: 6 }}>
-                        <Hand size={14} /> PAUSE FOR REFLECTION
+                        <Hand size={14} /> <T>PAUSE FOR REFLECTION</T>
                       </p>
-                      <p style={{ ...prose, fontSize: 15, fontStyle: "italic" }}>{sec.reflectionPause}</p>
+                      <p style={{ ...prose, fontSize: 15, fontStyle: "italic" }}><T>{sec.reflectionPause}</T></p>
                     </div>
                   )}
 
@@ -169,11 +170,11 @@ export default function Journey() {
                   {sec.discussionQuestions && sec.discussionQuestions.length > 0 && (
                     <div style={{ background: `${brown}08`, border: `1px solid ${brown}20`, borderRadius: 8, padding: 20, margin: "24px 0" }}>
                       <p style={{ color: brown, fontSize: 12, fontWeight: 700, letterSpacing: 1, marginBottom: 12, display: "flex", alignItems: "center", gap: 6 }}>
-                        <MessageCircle size={14} /> DISCUSSION QUESTIONS
+                        <MessageCircle size={14} /> <T>DISCUSSION QUESTIONS</T>
                       </p>
                       {sec.discussionQuestions.map((q, qi) => (
                         <p key={qi} style={{ ...prose, fontSize: 15, marginBottom: qi < sec.discussionQuestions.length - 1 ? 12 : 0 }}>
-                          {qi + 1}. {q}
+                          {qi + 1}. <T>{q}</T>
                         </p>
                       ))}
                     </div>
